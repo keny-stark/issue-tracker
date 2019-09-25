@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, View
-from webapp.forms import TrackerForm
+from webapp.forms import TrackerForm, Status, Type
 from webapp.models import Tracker
 
 
@@ -13,7 +13,7 @@ class IndexView(TemplateView):
         return context
 
 
-class ArticleView(TemplateView):
+class TrackerView(TemplateView):
     template_name = 'tracker.html'
 
     def get_context_data(self, **kwargs):
