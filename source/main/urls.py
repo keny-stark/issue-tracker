@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
     path('tracker/<int:pk>/', TrackerView.as_view(), name='tracker'),
-    path('tracker/add/', CreateView, name='tracker_add'),
-    path('tracker/<int:pk>/edit/', TracerUpdate, name='update_tracker'),
-    path('tracker/<int:pk>/delete/', DeleteTracker, name='delete_tracker')
+    path('tracker/add/', CreateView.as_view(), name='tracker_add'),
+    path('tracker/<int:pk>/edit/', TracerUpdate.as_view(), name='update_tracker'),
+    path('tracker/<int:pk>/delete/', DeleteTracker.as_view(), name='delete_tracker')
 ]

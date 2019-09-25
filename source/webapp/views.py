@@ -19,23 +19,24 @@ class TrackerView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         article_pk = kwargs.get('pk')
-        context['article'] = get_object_or_404(Tracker, pk=article_pk)
+        context['tracker'] = get_object_or_404(Tracker, pk=article_pk)
         return context
 
 
 class CreateView(View):
-    def create(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            form = TrackerForm()
-            return render(request, 'add_tracker.html', context={'form': form})
-        elif request.method == 'POST':
+
+    def get(self, request, *args, **kwargs):
+        form = TrackerForm()
+        return render(request, 'add_tracker.html', context={'form': form})
+
+    def post(self, request, *args, **kwargs):
             form = TrackerForm(data=request.POST)
             if form.is_valid():
                 tracker = Tracker.objects.create(
-                    title=form.cleaned_data['title'],
-                    author=form.cleaned_data['author'],
-                    text=form.cleaned_data['text'],
-                    category=form.cleaned_data['category']
+                    summary=form.cleaned_data['summary'],
+                    description=form.cleaned_data['description'],
+                    status=form.cleaned_data['status'],
+                    type=form.cleaned_data['type']
                 )
                 return redirect('tracker', pk=tracker.pk)
             else:
@@ -43,34 +44,38 @@ class CreateView(View):
 
 
 class TracerUpdate(View):
-    def update(self, request, pk):
+
+    def get(self, request, pk):
         tracker = get_object_or_404(Tracker, pk=pk)
-        if request.method == 'GET':
-            form = TrackerForm(data={
-                'title': tracker.title,
-                'author': tracker.author,
-                'text': tracker.text,
-                # 'category': tracker.category_id
-            })
-            return render(request, 'edit.html', context={'form': form, 'article': tracker})
-        elif request.method == 'POST':
-            form = TrackerForm(data=request.POST)
-            if form.is_valid():
-                tracker.title = form.cleaned_data['title']
-                tracker.author = form.cleaned_data['author']
-                tracker.text = form.cleaned_data['text']
-                tracker.category = form.cleaned_data['category']
-                tracker.save()
-                return redirect('article_view', pk=tracker.pk)
-            else:
-                return render(request, 'edit.html', context={'form': form, 'article': tracker})
+        form = TrackerForm(data={
+            'title': tracker.summary,
+            'author': tracker.description,
+            'text': tracker.status,
+            'category': tracker.type
+        })
+        return render(request, 'edit.html', context={'form': form, 'tracker': tracker})
+
+    def post(self, request, pk):
+        tracker = get_object_or_404(Tracker, pk=pk)
+        form = TrackerForm(data=request.POST)
+        if form.is_valid():
+            tracker.summary = form.cleaned_data['summary']
+            tracker.description = form.cleaned_data['description']
+            tracker.status = form.cleaned_data['status']
+            tracker.type = form.cleaned_data['type']
+            tracker.save()
+            return redirect('tracker', pk=tracker.pk)
+        else:
+            return render(request, 'edit.html', context={'form': form, 'tracker': tracker})
 
 
 class DeleteTracker(View):
-    def delete(self, request, pk):
+
+    def get(self, request, pk):
         tracker = get_object_or_404(Tracker, pk=pk)
-        if request.method == 'GET':
-            return render(request, 'edit.html', context={'tracker': tracker})
-        elif request.method == 'POST':
-            tracker.delete()
-            return redirect('index')
+        return render(request, 'delete_tracker.html', context={'tracker': tracker})
+
+    def post(self, request, pk):
+        tracker = get_object_or_404(Tracker, pk=pk)
+        tracker.delete()
+        return redirect('index')
