@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, View
-from webapp.forms import TrackerForm, Status, Type
-from webapp.models import Tracker
+from webapp.forms import TrackerForm, StatusForm, TypeForm
+from webapp.models import Tracker, Status, Type
 
 
 class IndexView(TemplateView):
@@ -79,3 +79,97 @@ class DeleteTracker(View):
         tracker = get_object_or_404(Tracker, pk=pk)
         tracker.delete()
         return redirect('index')
+
+
+def type_views(request, *args, **kwargs):
+    type = Type.objects.all()
+    return render(request, 'type.html', context={
+        'type': type
+    })
+
+
+def status_views(request, *args, **kwargs):
+    status = Status.objects.all()
+    return render(request, 'status.html', context={
+        'status': status
+    })
+
+
+def add_type(request, *args, **kwargs):
+    if request.method == 'GET':
+        form = TypeForm()
+        return render(request, 'add_type.html', context={
+            'form': form,
+        })
+    elif request.method == 'POST':
+        form = TypeForm(data=request.POST)
+        if form.is_valid():
+            Type.objects.create(
+            type=form.cleaned_data['type'])
+            return redirect('type_views')
+        else:
+            return render(request, 'add_type.html', context={'form': form})
+
+
+def delete_type(request, pk):
+    type = get_object_or_404(Type, pk=pk)
+    type.delete()
+    return redirect('type_views')
+
+
+def update_type(request, pk):
+        type = get_object_or_404(Type, pk=pk)
+        if request.method == 'GET':
+            form = TypeForm(data={
+                'type': type.type
+            })
+            return render(request, 'edit _type.html', context={
+                'type': type, 'form': form})
+        elif request.method == "POST":
+            form = TypeForm(data=request.POST)
+            if form.is_valid():
+                type.type = form.cleaned_data['type']
+                type.save()
+                return redirect('type_views')
+            else:
+                return render(request, 'edit _type.html', context={'form': form, 'type': type})
+
+
+def add_status(request, *args, **kwargs):
+    if request.method == 'GET':
+        form = StatusForm()
+        return render(request, 'add_status.html', context={
+            'form': form,
+        })
+    elif request.method == 'POST':
+        form = StatusForm(data=request.POST)
+        if form.is_valid():
+            Status.objects.create(
+            status=form.cleaned_data['status'])
+            return redirect('status_views')
+        else:
+            return render(request, 'add_status.html', context={'form': form})
+
+
+def delete_status(request, pk):
+    status = get_object_or_404(Status, pk=pk)
+    status.delete()
+    return redirect('status_views')
+
+
+def update_status(request, pk):
+        status = get_object_or_404(Status, pk=pk)
+        if request.method == 'GET':
+            form = StatusForm(data={
+                'status': status.status
+            })
+            return render(request, 'edit_status.html', context={
+                'status': status, 'form': form})
+        elif request.method == "POST":
+            form = StatusForm(data=request.POST)
+            if form.is_valid():
+                status.status = form.cleaned_data['status']
+                status.save()
+                return redirect('status_views')
+            else:
+                return render(request, 'edit_status.html', context={'form': form, 'status': status})

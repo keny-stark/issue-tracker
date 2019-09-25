@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block menu %}
+    <li><a href="{% url 'add_status' %}" class="action-btn">+ Add tracker +</a></li>
+{% endblock %}
+
+{% block content %}
+    <h3>Status</h3>
+        <div class="home_div">
+            {% for stat_ty in status %}
+                <div class="boss_div">
+                    <h4>{{ stat_ty.status }}</h4>
+                    <a href="{% url 'update_status' stat_ty.pk %}" class="btn btn3">Edit</a>
+                    <a href="{% url 'delete_status' stat_ty.pk %}" class="btn btn2">Delete</a>
+
+                </div>
+            {% endfor %}
+        </div>
+{% endblock %}

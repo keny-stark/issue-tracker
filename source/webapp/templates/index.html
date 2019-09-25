@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block menu %}
-    <li><a href="{% url 'tracker_add' %}" class="action-btn">+ Add List +</a></li>
+    <li><a href="{% url 'tracker_add' %}" class="action-btn">+ Add tracker +</a></li>
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle action-btn" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Category
         </a>
     </li>
+    <li><a href="{% url 'status_views' %}" class="action-btn">Status</a></li>
+    <li><a href="{% url 'type_views' %}" class="action-btn">Type</a></li>
 {% endblock %}
 
 {% block content %}

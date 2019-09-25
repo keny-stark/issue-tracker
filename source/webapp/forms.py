@@ -15,4 +15,4 @@ class TypeForm(forms.Form):
 
 
 class StatusForm(forms.Form):
-    type = forms.CharField(max_length=40, required=True, label=type)
+    status = forms.CharField(max_length=40, required=True, label=type)

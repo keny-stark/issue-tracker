@@ -20,8 +20,8 @@
     </div>
 {% endblock %}
 {% block content %}
-    <h3>Name: {{ tracker.summary }}</h3>
+    <h3>summary: {{ tracker.summary }}</h3>
     <p class="for_text">Description: {{ tracker.description }}</p>
-    <p>Balance: {{ tracker.created_at }}</p>
-    <p>Category: <b>{{ tracker.status }}</b>, Prise: <b>{{ tracker.type }}</b></p>
+    <p>time of created: {{ tracker.created_at }}</p>
+    <p>status: <b>{{ tracker.status }}</b>, type: <b>{{ tracker.type }}</b></p>
 {% endblock %}

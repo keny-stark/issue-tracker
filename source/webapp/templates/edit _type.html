@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Update type{% endblock %}
+{% block content %}
+    <h1>Update type</h1>
+    <form method="POST" action="{% url "update_type" type.pk %}" class="for_form">
+        {% include 'partial/tracker_form.html' with button_text="edit" %}
+    </form>
+{% endblock %}

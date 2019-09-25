@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Add new type{% endblock %}
+{% block content %}
+    <h1>Create new type</h1>
+    <form method="POST" action="{% url "add_type" %}" class="for_form">
+        {% include 'partial/tracker_form.html' with button_text='Create' %}
+    </form>
+{% endblock %}
