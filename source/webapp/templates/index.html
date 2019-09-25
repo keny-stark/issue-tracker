@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block menu %}
+    <li><a href="{% url 'add_product' %}" class="action-btn">+ Add List +</a></li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle action-btn" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Category
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            {% for product in products %}
+                <a class="dropdown-item" href="{% url 'category_view' product.status  %}">{{ product.status }}</a>
+            {% endfor %}
+        </div>
+    </li>
+    <li>
+        <form action="{% url 'index' %}" class="form-inline my-2 my-lg-0">
+            <input class="form-control" type="search" name="search" placeholder="Search">
+            <button class="btn btn4" type="submit">Search</button>
+        </form></li>
+{% endblock %}
+
+{% block content %}
+        <div class="home_div">
+            {% for product in products %}
+                <div class="boss_div">
+                    <h4>{{ product.name }}</h4>
+                    <h5>{{ product.status }}</h5>
+                    <h5>{{ product.price }}$</h5>
+                    <a href="{% url 'product_view' product.pk %}" class="btn btn1">More >>></a>
+                    <a href="{% url 'update_product' pk=product.pk %}" class="btn btn3">Edit</a>
+                    <a href="{% url 'delete_product' pk=product.pk %}" class="btn btn2">Delete</a>
+
+                </div>
+            {% endfor %}
+        </div>
+{% endblock %}
