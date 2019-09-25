@@ -1,0 +1,128 @@
+[
+{
+  "model": "webapp.tracker",
+  "pk": 1,
+  "fields": {
+    "summary": "do homework",
+    "description": "i need to take the rope and soap, then find a chair and find a place where you can hook the rope",
+    "status": 1,
+    "type": 1,
+    "created_at": "2019-09-25T13:37:25.682Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 2,
+  "fields": {
+    "summary": "add view",
+    "description": "add view for search",
+    "status": 3,
+    "type": 1,
+    "created_at": "2019-09-25T16:28:51.923Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 3,
+  "fields": {
+    "summary": "make artificial intelligence",
+    "description": "make artificial intelligence to take over the world",
+    "status": 2,
+    "type": 1,
+    "created_at": "2019-09-25T16:30:12.292Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 4,
+  "fields": {
+    "summary": "fix local people",
+    "description": "need to get rid of myrky",
+    "status": 2,
+    "type": 2,
+    "created_at": "2019-09-25T16:32:45.802Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 5,
+  "fields": {
+    "summary": "finding a new way to improve code",
+    "description": "finding a new way to improve the code and replace the old one",
+    "status": 2,
+    "type": 3,
+    "created_at": "2019-09-25T16:34:40.181Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 6,
+  "fields": {
+    "summary": "drink beer",
+    "description": "to drink beer, just relax",
+    "status": 1,
+    "type": 3,
+    "created_at": "2019-09-25T16:37:16.632Z"
+  }
+},
+{
+  "model": "webapp.type",
+  "pk": 1,
+  "fields": {
+    "type": "task"
+  }
+},
+{
+  "model": "webapp.type",
+  "pk": 2,
+  "fields": {
+    "type": "bag"
+  }
+},
+{
+  "model": "webapp.type",
+  "pk": 3,
+  "fields": {
+    "type": "enhancement"
+  }
+},
+{
+  "model": "webapp.status",
+  "pk": 1,
+  "fields": {
+    "status": "new"
+  }
+},
+{
+  "model": "webapp.status",
+  "pk": 2,
+  "fields": {
+    "status": "in_progress"
+  }
+},
+{
+  "model": "webapp.status",
+  "pk": 3,
+  "fields": {
+    "status": "done"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$hQaSLBUFaRCl$JZkb0bepaDmhDuvCE8UAY/JsbqENU2JDrymgsBJeg60=",
+    "last_login": "2019-09-25T12:51:46.259Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-09-25T10:22:57.026Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
