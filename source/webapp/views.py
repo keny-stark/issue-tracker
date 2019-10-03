@@ -1,26 +1,31 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, ListView
 from webapp.forms import TrackerForm, StatusForm, TypeForm
 from webapp.models import Tracker, Status, Type
 
 
-class IndexView(TemplateView):
+class IndexView(ListView):
+    context_object_name = 'tracker'
+    model = Tracker
     template_name = 'index.html'
+    paginate_by = 3
+    paginate_orphans = 1
+
+
+class DetailView(TemplateView):
+    model = None
+    context_key = 'tracker'
 
     def get_context_data(self, **kwargs):
+        tracker_pk = kwargs.get('pk')
         context = super().get_context_data(**kwargs)
-        context['tracker'] = Tracker.objects.all()
+        context[self.context_key] = get_object_or_404(self.model, pk=tracker_pk)
         return context
 
 
-class TrackerView(TemplateView):
+class TrackerView(DetailView):
+    model = Tracker
     template_name = 'tracker.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        article_pk = kwargs.get('pk')
-        context['tracker'] = get_object_or_404(Tracker, pk=article_pk)
-        return context
 
 
 class CreateView(View):
@@ -45,8 +50,8 @@ class CreateView(View):
 
 class TracerUpdate(View):
 
-    def get(self, request, pk):
-        tracker = get_object_or_404(Tracker, pk=pk)
+    def get(self, request,  *args, **kwargs):
+        tracker = get_object_or_404(Tracker, pk=kwargs.get('pk'))
         form = TrackerForm(data={
             'title': tracker.summary,
             'author': tracker.description,
@@ -81,18 +86,16 @@ class DeleteTracker(View):
         return redirect('index')
 
 
-def type_views(request, *args, **kwargs):
-    type = Type.objects.all()
-    return render(request, 'type.html', context={
-        'type': type
-    })
+class StatusView(ListView):
+    context_object_name = 'status'
+    model = Status
+    template_name = 'status.html'
 
 
-def status_views(request, *args, **kwargs):
-    status = Status.objects.all()
-    return render(request, 'status.html', context={
-        'status': status
-    })
+class TypeView(ListView):
+    context_object_name = 'type'
+    model = Type
+    template_name = 'type.html'
 
 
 def add_type(request, *args, **kwargs):

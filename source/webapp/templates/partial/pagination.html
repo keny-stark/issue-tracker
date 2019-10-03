@@ -1,0 +1,24 @@
+<div class="pagination">
+    <span class="step-links">
+        <a href="?page=1">&laquo; to the begin</a>
+
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">back</a>
+        {% else %}
+            <span class="page-disabled">back</span>
+        {% endif %}
+
+        <span class="current">
+            page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% else %}
+            <span class="page-disabled">next</span>
+        {% endif %}
+
+        <a href="?page={{ page_obj.paginator.num_pages }}">back to and &raquo;</a>
+    </span>
+</div>
+

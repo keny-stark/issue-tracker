@@ -10,7 +10,7 @@
             {% for stat_ty in type %}
                 <div class="boss_div">
                     <h4>{{ stat_ty.type }}</h4>
-                    <a href="{% url 'update_tracker' stat_ty.pk %}" class="btn btn3">Edit</a>
+                    <a href="{% url 'update_type' stat_ty.pk %}" class="btn btn3">Edit</a>
                     <a href="{% url 'delete_type' stat_ty.pk %}" class="btn btn2">Delete</a>
 
                 </div>
