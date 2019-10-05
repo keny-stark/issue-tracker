@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, View, ListView
+from django.urls import reverse
+from django.views.generic import TemplateView, View, ListView, CreateView, DetailView
 from webapp.forms import TrackerForm, StatusForm, TypeForm
 from webapp.models import Tracker, Status, Type
 
@@ -12,15 +13,15 @@ class IndexView(ListView):
     paginate_orphans = 1
 
 
-class DetailView(TemplateView):
-    model = None
-    context_key = 'tracker'
-
-    def get_context_data(self, **kwargs):
-        tracker_pk = kwargs.get('pk')
-        context = super().get_context_data(**kwargs)
-        context[self.context_key] = get_object_or_404(self.model, pk=tracker_pk)
-        return context
+# class DetailView(TemplateView):
+#     model = None
+#     context_key = 'tracker'
+#
+#     def get_context_data(self, **kwargs):
+#         tracker_pk = kwargs.get('pk')
+#         context = super().get_context_data(**kwargs)
+#         context[self.context_key] = get_object_or_404(self.model, pk=tracker_pk)
+#         return context
 
 
 class TrackerView(DetailView):
@@ -28,24 +29,13 @@ class TrackerView(DetailView):
     template_name = 'tracker.html'
 
 
-class CreateView(View):
+class TrackerCreateView(CreateView):
+    template_name = 'add_tracker.html'
+    model = Tracker
+    form_class = TrackerForm
 
-    def get(self, request, *args, **kwargs):
-        form = TrackerForm()
-        return render(request, 'add_tracker.html', context={'form': form})
-
-    def post(self, request, *args, **kwargs):
-            form = TrackerForm(data=request.POST)
-            if form.is_valid():
-                tracker = Tracker.objects.create(
-                    summary=form.cleaned_data['summary'],
-                    description=form.cleaned_data['description'],
-                    status=form.cleaned_data['status'],
-                    type=form.cleaned_data['type']
-                )
-                return redirect('tracker', pk=tracker.pk)
-            else:
-                return render(request, 'add_tracker.html', context={'form': form})
+    def get_success_url(self):
+        return reverse('tracker', kwargs={'pk': self.object.pk})
 
 
 class TracerUpdate(View):
@@ -98,20 +88,13 @@ class TypeView(ListView):
     template_name = 'type.html'
 
 
-def add_type(request, *args, **kwargs):
-    if request.method == 'GET':
-        form = TypeForm()
-        return render(request, 'add_type.html', context={
-            'form': form,
-        })
-    elif request.method == 'POST':
-        form = TypeForm(data=request.POST)
-        if form.is_valid():
-            Type.objects.create(
-            type=form.cleaned_data['type'])
-            return redirect('type_views')
-        else:
-            return render(request, 'add_type.html', context={'form': form})
+class TypeAddView(CreateView):
+    form_class = TypeForm
+    template_name = 'add_type.html'
+    model = Type
+
+    def get_success_url(self):
+        return reverse('type_views')
 
 
 def delete_type(request, pk):
@@ -138,20 +121,13 @@ def update_type(request, pk):
                 return render(request, 'edit _type.html', context={'form': form, 'type': type})
 
 
-def add_status(request, *args, **kwargs):
-    if request.method == 'GET':
-        form = StatusForm()
-        return render(request, 'add_status.html', context={
-            'form': form,
-        })
-    elif request.method == 'POST':
-        form = StatusForm(data=request.POST)
-        if form.is_valid():
-            Status.objects.create(
-            status=form.cleaned_data['status'])
-            return redirect('status_views')
-        else:
-            return render(request, 'add_status.html', context={'form': form})
+class StatusAddView(CreateView):
+    form_class = StatusForm
+    template_name = 'add_status.html'
+    model = Status
+
+    def get_success_url(self):
+        return reverse('status_views')
 
 
 def delete_status(request, pk):
@@ -176,3 +152,5 @@ def update_status(request, pk):
                 return redirect('status_views')
             else:
                 return render(request, 'edit_status.html', context={'form': form, 'status': status})
+
+
