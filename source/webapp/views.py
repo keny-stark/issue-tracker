@@ -1,9 +1,38 @@
+
+
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from django.views.generic import TemplateView, View, ListView, CreateView, DetailView
+from django.urls.base import reverse
+from django.views.generic import TemplateView, ListView, DetailView, View
 from webapp.forms import TrackerForm, StatusForm, TypeForm
 from webapp.models import Tracker, Status, Type
 
+
+class CreateView(View):
+    form_class = None
+    template_name = None
+    redirect_url = ''
+    model = None
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, context={'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_redirect_url(self):
+        return self.redirect_url
+
+    def form_valid(self, form):
+        self.object = self.model.objects.create(**form.cleaned_data)
+        return redirect(self.get_redirect_url())
+
+    def form_invalid(self, form):
+        return render(self.request, self.template_name, context={'form': form})
 
 class IndexView(ListView):
     context_object_name = 'tracker'
@@ -36,44 +65,6 @@ class TrackerCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('tracker', kwargs={'pk': self.object.pk})
-
-
-class TracerUpdate(View):
-
-    def get(self, request,  *args, **kwargs):
-        tracker = get_object_or_404(Tracker, pk=kwargs.get('pk'))
-        form = TrackerForm(data={
-            'title': tracker.summary,
-            'author': tracker.description,
-            'text': tracker.status,
-            'category': tracker.type
-        })
-        return render(request, 'edit.html', context={'form': form, 'tracker': tracker})
-
-    def post(self, request, pk):
-        tracker = get_object_or_404(Tracker, pk=pk)
-        form = TrackerForm(data=request.POST)
-        if form.is_valid():
-            tracker.summary = form.cleaned_data['summary']
-            tracker.description = form.cleaned_data['description']
-            tracker.status = form.cleaned_data['status']
-            tracker.type = form.cleaned_data['type']
-            tracker.save()
-            return redirect('tracker', pk=tracker.pk)
-        else:
-            return render(request, 'edit.html', context={'form': form, 'tracker': tracker})
-
-
-class DeleteTracker(View):
-
-    def get(self, request, pk):
-        tracker = get_object_or_404(Tracker, pk=pk)
-        return render(request, 'delete_tracker.html', context={'tracker': tracker})
-
-    def post(self, request, pk):
-        tracker = get_object_or_404(Tracker, pk=pk)
-        tracker.delete()
-        return redirect('index')
 
 
 class StatusView(ListView):
@@ -152,5 +143,101 @@ def update_status(request, pk):
                 return redirect('status_views')
             else:
                 return render(request, 'edit_status.html', context={'form': form, 'status': status})
+
+
+class UpdateView(View):
+    context_key = 'object'
+    form_class = None
+    template_name = None
+    model = None
+    redirect_url = ''
+    key_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(instance=self.get_object())
+        context = {'form': form}
+        context[self.context_key] = self.get_object()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(instance=self.get_object(), data=request.POST)
+        self.object = form.save()
+        return redirect(self.get_redirect_url())
+        # if form.is_valid():
+        #     return self.form_valid(form)
+        # else:
+        #     return self.form_invalid(form)
+
+    def get_object(self):
+        pk = self.kwargs.get(self.key_kwarg)
+        return get_object_or_404(self.model, pk=pk)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return redirect(self.get_redirect_url())
+
+    def form_invalid(self, form):
+        context = {'form': form}
+        context[self.context_key] = form
+        return render(self.request, self.template_name, context)
+
+    def get_redirect_url(self):
+        return self.redirect_url
+
+
+class TracerUpdate(UpdateView):
+    model = Tracker
+    form_class = TrackerForm
+    template_name = 'edit.html'
+    # success_url = reverse_lazy('index')
+
+    def get_success_url(self):
+        print('sDvszfdvasdfvsfdvds')
+        return reverse('tracker', kwargs={'pk': self.object.pk})
+
+
+class DeleteView(View):
+    context_key = 'object'
+    form_class = None
+    model = None
+    template_name = None
+    redirect_url = ''
+    key_kwarg = 'pk'
+
+    def get(self, **kwargs):
+        form = self.form_class(instance=self.get_object())
+        context = {'form': form}
+        context[self.context_key] = self.get_object()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        print('elik')
+        form = self.form_class(data=request.POST, instance=self.get_object())
+        print(form)
+        form.delete()
+        return redirect(self.get_redirect_url())
+
+        # if form.is_valid():
+        #     return self.form_valid(form)
+        # else:
+        #     return self.form_invalid(form)
+
+    def get_object(self):
+        pk = self.kwargs.get(self.key_kwarg)
+        return get_object_or_404(self.model, pk=pk)
+
+    def get_redirect_url(self):
+        return self.redirect_url
+
+
+class DeleteTracker(DetailView):
+    model = Tracker
+    form_class = TrackerForm
+    template_name = 'delete_tracker.html'
+
+
+    def get_success_url(self):
+        return reverse('index')
+
 
 

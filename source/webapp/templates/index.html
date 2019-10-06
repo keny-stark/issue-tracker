@@ -9,11 +9,11 @@
         <div class="home_div">
             {% for trackers in tracker %}
                 <div class="boss_div">
-                    <h4>{{ trackers.description }}</h4>
+                    <h4>{{ trackers.summary }}</h4>
                     <div class="for_button">
                         <a href="{% url 'tracker' trackers.pk %}" class="btn btn1">More >>></a>
-                        <a href="{% url 'update_tracker' trackers.pk %}" class="btn btn3">Edit</a>
-                        <a href="{% url 'delete_tracker' trackers.pk %}" class="btn btn2">Delete</a>
+                        <a href="{% url 'update_tracker' pk=trackers.pk %}" class="btn btn3">Edit</a>
+                        <a href="{% url 'delete_tracker' pk=trackers.pk %}" class="btn btn2">Delete</a>
                     </div>
                 </div>
             {% endfor %}
