@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls.base import reverse
 from django.views.generic import TemplateView, ListView, DetailView, View
@@ -25,7 +23,7 @@ class CreateView(View):
             return self.form_invalid(form)
 
     def get_redirect_url(self):
-        return self.redirect_url
+        return reverse(self.redirect_url, kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         self.object = self.model.objects.create(**form.cleaned_data)
@@ -42,17 +40,6 @@ class IndexView(ListView):
     paginate_orphans = 1
 
 
-# class DetailView(TemplateView):
-#     model = None
-#     context_key = 'tracker'
-#
-#     def get_context_data(self, **kwargs):
-#         tracker_pk = kwargs.get('pk')
-#         context = super().get_context_data(**kwargs)
-#         context[self.context_key] = get_object_or_404(self.model, pk=tracker_pk)
-#         return context
-
-
 class TrackerView(DetailView):
     model = Tracker
     template_name = 'tracker.html'
@@ -62,10 +49,7 @@ class TrackerCreateView(CreateView):
     template_name = 'add_tracker.html'
     model = Tracker
     form_class = TrackerForm
-
-    def get_success_url(self):
-        return reverse('tracker', kwargs={'pk': self.object.pk})
-
+    redirect_url = 'tracker'
 
 class StatusView(ListView):
     context_object_name = 'status'
@@ -94,24 +78,6 @@ def delete_type(request, pk):
     return redirect('type_views')
 
 
-def update_type(request, pk):
-        type = get_object_or_404(Type, pk=pk)
-        if request.method == 'GET':
-            form = TypeForm(data={
-                'type': type.type
-            })
-            return render(request, 'edit _type.html', context={
-                'type': type, 'form': form})
-        elif request.method == "POST":
-            form = TypeForm(data=request.POST)
-            if form.is_valid():
-                type.type = form.cleaned_data['type']
-                type.save()
-                return redirect('type_views')
-            else:
-                return render(request, 'edit _type.html', context={'form': form, 'type': type})
-
-
 class StatusAddView(CreateView):
     form_class = StatusForm
     template_name = 'add_status.html'
@@ -125,24 +91,6 @@ def delete_status(request, pk):
     status = get_object_or_404(Status, pk=pk)
     status.delete()
     return redirect('status_views')
-
-
-def update_status(request, pk):
-        status = get_object_or_404(Status, pk=pk)
-        if request.method == 'GET':
-            form = StatusForm(data={
-                'status': status.status
-            })
-            return render(request, 'edit_status.html', context={
-                'status': status, 'form': form})
-        elif request.method == "POST":
-            form = StatusForm(data=request.POST)
-            if form.is_valid():
-                status.status = form.cleaned_data['status']
-                status.save()
-                return redirect('status_views')
-            else:
-                return render(request, 'edit_status.html', context={'form': form, 'status': status})
 
 
 class UpdateView(View):
@@ -161,12 +109,10 @@ class UpdateView(View):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(instance=self.get_object(), data=request.POST)
-        self.object = form.save()
-        return redirect(self.get_redirect_url())
-        # if form.is_valid():
-        #     return self.form_valid(form)
-        # else:
-        #     return self.form_invalid(form)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def get_object(self):
         pk = self.kwargs.get(self.key_kwarg)
@@ -182,62 +128,72 @@ class UpdateView(View):
         return render(self.request, self.template_name, context)
 
     def get_redirect_url(self):
-        return self.redirect_url
+        return reverse(self.redirect_url, kwargs={'pk': self.object.pk})
 
 
-class TracerUpdate(UpdateView):
-    model = Tracker
-    form_class = TrackerForm
-    template_name = 'edit.html'
-    # success_url = reverse_lazy('index')
-
-    def get_success_url(self):
-        print('sDvszfdvasdfvsfdvds')
-        return reverse('tracker', kwargs={'pk': self.object.pk})
-
-
-class DeleteView(View):
+class DeleteView(TemplateView):
     context_key = 'object'
     form_class = None
-    model = None
     template_name = None
+    model = None
     redirect_url = ''
     key_kwarg = 'pk'
 
     def get(self, **kwargs):
-        form = self.form_class(instance=self.get_object())
-        context = {'form': form}
+        context = super().get_context_data(**kwargs)
         context[self.context_key] = self.get_object()
         return context
 
     def post(self, request, *args, **kwargs):
-        print('elik')
         form = self.form_class(data=request.POST, instance=self.get_object())
-        print(form)
-        form.delete()
-        return redirect(self.get_redirect_url())
-
-        # if form.is_valid():
-        #     return self.form_valid(form)
-        # else:
-        #     return self.form_invalid(form)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def get_object(self):
         pk = self.kwargs.get(self.key_kwarg)
         return get_object_or_404(self.model, pk=pk)
 
+    def form_valid(self, form):
+        self.object = form
+        self.object.delete()
+        return redirect(self.get_redirect_url())
+
+    def form_invalid(self, form):
+        context = {'form': form}
+        context[self.context_key] = form
+        return render(self.request, self.template_name, context)
+
     def get_redirect_url(self):
-        return self.redirect_url
+        return reverse(self.redirect_url)
 
 
 class DeleteTracker(DetailView):
     model = Tracker
     form_class = TrackerForm
     template_name = 'delete_tracker.html'
+    redirect_url = 'index'
 
 
-    def get_success_url(self):
-        return reverse('index')
+class TracerUpdate(UpdateView):
+    model = Tracker
+    form_class = TrackerForm
+    template_name = 'edit.html'
+    redirect_url = 'tracker'
 
 
+class UpdateStatusView(UpdateView):
+    model = Status
+    form_class = StatusForm
+    template_name = 'edit_status.html'
+    redirect_url = 'status_views'
 
+
+class UpdateTypeView(UpdateView):
+    model = Type
+    form_class = TypeForm
+    template_name = 'edit_type.html'
+    redirect_url = 'type_views'
+
+# я облажался с этой домашкой ((

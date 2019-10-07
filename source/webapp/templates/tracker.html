@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}List{% endblock %}
 {% block menu %}
-    <li><a href="{% url 'update_tracker' object.pk %}" class="action-btn">Edit</a></li>
+    <li><a href="{% url 'update_tracker' pk=tracker.pk %}" class="action-btn">Edit</a></li>
     <li>
         <main>
             <div class="button js-button-campaign action-btn"><span>Delete</span></div>
@@ -9,7 +9,7 @@
     </li>
     <div class="overlay js-overlay-campaign">
         <div class="popup js-popup-campaign">
-            <form method="POST" action="{% url 'delete_tracker' object.pk %}">
+            <form method="POST" action="{% url 'delete_tracker' pk=tracker.pk %}">
                 {% csrf_token %}
                 <h2>Are you sure you want to delete this?</h2>
                 <button class="action-btn" type="submit">Yes</button>
@@ -20,8 +20,8 @@
     </div>
 {% endblock %}
 {% block content %}
-    <h3>summary: {{ object.summary }}</h3>
-    <p class="for_text">Description: {{ object.description }}</p>
-    <p>time of created: {{ object.created_at }}</p>
-    <p>status: <b>{{ object.status }}</b>, type: <b>{{ object.type }}</b></p>
+    <h3>summary: {{ tracker.summary }}</h3>
+    <p class="for_text">Description: {{ tracker.description }}</p>
+    <p>time of created: {{ tracker.created_at }}</p>
+    <p>status: <b>{{ tracker.status }}</b>, type: <b>{{ tracker.type }}</b></p>
 {% endblock %}

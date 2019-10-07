@@ -27,9 +27,9 @@ urlpatterns = [
     path('tracker/type/', TypeView.as_view(), name='type_views'),
     path('tracker/type/add/', TypeAddView.as_view(), name='add_type'),
     path('tracker/type/delete/<int:pk>/', delete_type, name='delete_type'),
-    path('tracker/type/update/<int:pk>/', update_type, name='update_type'),
+    path('tracker/type/update/<int:pk>/', UpdateTypeView.as_view(), name='update_type'),
     path('tracker/status/', StatusView.as_view(), name='status_views'),
     path('tracker/status/add/', StatusAddView.as_view(), name='add_status'),
-    path('tracker/status/update/<int:pk>/', update_status, name='update_status'),
+    path('tracker/status/update/<int:pk>/', UpdateStatusView.as_view(), name='update_status'),
     path('tracker/status/delete/<int:pk>/', delete_status, name='delete_status'),
 ]
