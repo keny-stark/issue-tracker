@@ -9,3 +9,4 @@ class TrackerAdmin(admin.ModelAdmin):
 admin.site.register(Tracker, TrackerAdmin)
 admin.site.register(Type)
 admin.site.register(Status)
+admin.site.register(Project)

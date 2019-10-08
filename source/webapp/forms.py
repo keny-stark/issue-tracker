@@ -1,5 +1,5 @@
 from django import forms
-from webapp.models import Type, Status, Tracker
+from webapp.models import Type, Status, Tracker, Project
 
 
 class TrackerForm(forms.ModelForm):
@@ -9,6 +9,11 @@ class TrackerForm(forms.ModelForm):
             'summary': forms.TextInput
         }
         exclude = ['created_at']
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
 
 
 class TypeForm(forms.ModelForm):

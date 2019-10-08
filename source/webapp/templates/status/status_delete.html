@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Delete tracker{% endblock %}
+{% block content %}
+    <form method="POST" action="{% url 'delete_status' status.pk %}">{% csrf_token %}
+        <h2>Are you sure you want to delete this?</h2>
+        <h3>{{ status.status }}</h3>
+        <button type="submit" class="action-btn">Delete</button>
+    </form>
+{% endblock %}
