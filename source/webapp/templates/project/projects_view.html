@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block menu %}
+    <li><a href="{% url 'project_create' %}" class="action-btn">+ Add tracker +</a></li>
+    <li><a href="{% url 'status_views' %}" class="action-btn">Status</a></li>
+    <li><a href="{% url 'type_views' %}" class="action-btn">Type</a></li>
+{% endblock %}
+
+{% block content %}
+        <div class="home_div">
+            {% for project_det in project %}
+                <div class="boss_div">
+                    <h4>{{ project.summary }}</h4>
+                    <div class="for_button">
+                        <a href="{% url 'project_detail' project_det.pk %}" class="btn btn1">More >>></a>
+                        <a href="{% url 'project_update' pk=project_det.pk %}" class="btn btn3">Edit</a>
+                        <a href="{% url 'delete_project' pk=project_det.pk %}" class="btn btn2">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+{% endblock %}

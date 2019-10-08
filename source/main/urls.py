@@ -32,4 +32,9 @@ urlpatterns = [
     path('tracker/status/add/', StatusAddView.as_view(), name='add_status'),
     path('tracker/status/update/<int:pk>/', UpdateStatusView.as_view(), name='update_status'),
     path('tracker/status/delete/<int:pk>/', DeleteStatus.as_view(), name='delete_status'),
+    path('projects/', ProjectView.as_view(), name='projects'),
+    path('project/<int:pk>/', ProjectDetailView.as_view(), name='project_detail'),
+    path('project/add/', ProjectCreateView.as_view(), name='project_create'),
+    path('project/<int:pk>/edit/', ProjectUpdate.as_view(), name='project_update'),
+    path('project/<int:pk>/delete/', ProjectDelete.as_view(), name='delete_project'),
 ]

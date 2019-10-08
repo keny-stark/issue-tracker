@@ -6,9 +6,9 @@ from webapp.models import Project
 
 
 class ProjectView(ListView):
-    context_object_name = 'tracker'
+    context_object_name = 'project'
     model = Project
-    template_name = 'tracker/index.html'
+    template_name = 'project/projects_view.html'
     ordering = ['-created_at']
     paginate_by = 3
     paginate_orphans = 1
@@ -16,7 +16,7 @@ class ProjectView(ListView):
 
 class ProjectDetailView(DetailView):
     model = Project
-    template_name = 'tracker/tracker.html'
+    template_name = 'project/project_detail_view.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,21 +36,21 @@ class ProjectDetailView(DetailView):
 
 
 class ProjectCreateView(CreateView):
-    template_name = 'tracker/add_tracker.html'
+    template_name = 'project/project_create.html'
     model = Project
     form_class = ProjectForm
-    redirect_url = 'tracker'
+    redirect_url = 'project'
 
 
 class ProjectUpdate(UpdateView):
     model = Project
     form_class = ProjectForm
-    template_name = 'tracker/edit.html'
-    redirect_url = 'tracker'
+    template_name = 'project/project_update.html'
+    redirect_url = 'project'
 
 
-class ProjectTracker(DeleteView):
-    template_name = 'tracker/delete_tracker.html'
+class ProjectDelete(DeleteView):
+    template_name = 'project/project_delete.html'
     model = Project
-    context_object_name = 'tracker'
-    success_url = reverse_lazy('index')
+    context_object_name = 'project'
+    success_url = reverse_lazy('project_detail')
