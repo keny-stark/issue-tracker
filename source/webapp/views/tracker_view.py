@@ -29,6 +29,7 @@ class TrackerUpdate(UpdateView):
     form_class = TrackerForm
     template_name = 'tracker/edit.html'
     redirect_url = 'tracker'
+    success_url = reverse_lazy('index')
 
 
 class DeleteTracker(DeleteView):

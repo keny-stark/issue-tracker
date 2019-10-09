@@ -17,7 +17,7 @@ class Tracker(models.Model):
     status = models.ForeignKey('webapp.Status', related_name='tracker', on_delete=models.PROTECT, verbose_name='Status')
     type = models.ForeignKey('webapp.Type', related_name='tracker', on_delete=models.PROTECT, verbose_name='Type')
     project_id = models.ForeignKey('webapp.Project', related_name='tracker',
-                                   on_delete=models.PROTECT, verbose_name='Project', blank=True, null=True)
+                                   on_delete=models.PROTECT, verbose_name='Project', blank=False, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Time of add')
 
     def __str__(self):

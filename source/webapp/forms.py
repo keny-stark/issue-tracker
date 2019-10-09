@@ -5,17 +5,21 @@ from webapp.models import Type, Status, Tracker, Project
 class TrackerForm(forms.ModelForm):
     class Meta:
         model = Tracker
+
         widgets = {
             'summary': forms.TextInput,
-            'project_id': forms.ChoiceField(required=True)
+            # 'project_id': forms.ChoiceField(required=True)
         }
+        required = (
+            'project'
+        )
         exclude = ['created_at']
 
 
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'description', 'created_at', 'updated_at']
+        fields = ['title', 'description']
 
 
 class TypeForm(forms.ModelForm):

@@ -9,7 +9,7 @@
         <div class="home_div">
             {% for project_det in project %}
                 <div class="boss_div">
-                    <h4>{{ project.summary }}</h4>
+                    <h4>{{ project_det.title }}</h4>
                     <div class="for_button">
                         <a href="{% url 'project_detail' project_det.pk %}" class="btn btn1">More >>></a>
                         <a href="{% url 'project_update' pk=project_det.pk %}" class="btn btn3">Edit</a>

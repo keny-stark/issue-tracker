@@ -21,7 +21,7 @@ class ProjectDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = TrackerForm()
-        trackers = context['project'].comments.order_by('-created_at')
+        trackers = context['project'].tracker.order_by('-created_at')
         self.paginate_comments_to_context(trackers, context)
         return context
 

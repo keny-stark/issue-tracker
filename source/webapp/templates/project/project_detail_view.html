@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block menu %}
+    <li><a href="{% url "project_update" project.pk %}">Edit</a></li>
+    <li><a href="{% url "delete_project" project.pk %}">Delete</a></li>
+    <li><a href="#add_comment">Add project</a></li>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+    <p>{{ project.description }}
+
+{#    <div class="pre">{{ article.text }}</div>#}
+    <hr/>
+    <h3>Comments:</h3>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <div class="comment-list">
+        {% for comment_det in tracker %}
+            <div class="com">
+                <p>{{ comment_det.author }}</p>
+                <div class="pre">{{ comment_det.deskription }}</div>
+                <p class="comment-links">
+                    <a href="{% url 'comment_update' comment_det.pk %}">Edit</a>
+                    <a href="{% url 'comment_delete' comment_det.pk %}">Delete</a>
+                </p>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <form action="{% url 'tracker_add' project.pk %}" method="POST" id="add_comment">
+        {% include 'partial/tracker_form.html' with button_text='Add' %}
+    </form>
+{% endblock %}
