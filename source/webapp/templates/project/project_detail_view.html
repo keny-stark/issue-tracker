@@ -35,7 +35,7 @@
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-    <form action="{% url 'tracker_add' project.pk %}" method="POST" id="add_comment">
+    <form action="{% url 'tracker_add' form. %}" method="POST" id="add_comment">
         {% include 'partial/tracker_form.html' with button_text='Add' %}
     </form>
 {% endblock %}

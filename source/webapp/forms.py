@@ -8,11 +8,7 @@ class TrackerForm(forms.ModelForm):
 
         widgets = {
             'summary': forms.TextInput,
-            # 'project_id': forms.ChoiceField(required=True)
         }
-        required = (
-            'project'
-        )
         exclude = ['created_at']
 
 

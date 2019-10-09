@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from webapp.forms import TrackerForm
-from webapp.models import Tracker
+from webapp.models import Tracker, Project
 
 
 class IndexView(ListView):
@@ -22,6 +23,17 @@ class TrackerCreateView(CreateView):
     model = Tracker
     form_class = TrackerForm
     redirect_url = 'tracker'
+
+
+class CommentForArticleCreateView(CreateView):
+    template_name = 'tracker/add_tracker.html'
+    form_class = TrackerForm
+
+    def form_valid(self, tracker):
+        project_pk = self.kwargs.get('pk')
+        project = get_object_or_404(Project, pk=project_pk)
+        project.tracker.create(**tracker.cleaned_data)
+        return redirect('project_detail', pk=project_pk)
 
 
 class TrackerUpdate(UpdateView):
