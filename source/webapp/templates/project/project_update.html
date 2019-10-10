@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}Update project{% endblock %}
+{% block menu %}
+    <li><a href="{% url 'tracker' object.pk %}" class="action-btn">View</a></li>
+{% endblock %}
+{% block content %}
+    <h1>Update project</h1>
+    <form method="POST" action="{% url "project_update" object.pk %}" class="for_form">
+        {% include 'partial/tracker_form.html' with button_text="edit" %}
+    </form>
+{% endblock %}

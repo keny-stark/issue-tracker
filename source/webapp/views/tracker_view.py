@@ -25,7 +25,7 @@ class TrackerCreateView(CreateView):
     redirect_url = 'tracker'
 
 
-class CommentForArticleCreateView(CreateView):
+class TrackerForProjectCreateView(CreateView):
     template_name = 'tracker/add_tracker.html'
     form_class = TrackerForm
 

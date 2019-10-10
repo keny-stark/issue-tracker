@@ -263,3 +263,12 @@ body {
 .for_button{
     margin-top: inherit;
 }
+.tracker_for_project{
+    margin-bottom: 20px;
+    border: solid 20px #00ff5a52;
+
+}
+.form-project_tracker {
+    max-width: 40%;
+    margin-top: 100px;
+}

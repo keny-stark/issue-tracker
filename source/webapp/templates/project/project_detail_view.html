@@ -3,39 +3,38 @@
 {% block title %}{{ project.title }}{% endblock %}
 
 {% block menu %}
-    <li><a href="{% url "project_update" project.pk %}">Edit</a></li>
-    <li><a href="{% url "delete_project" project.pk %}">Delete</a></li>
-    <li><a href="#add_comment">Add project</a></li>
+    <li><a href="{% url "project_update" project.pk %}" class="action-btn">Edit</a></li>
+    <li><a href="{% url "delete_project" project.pk %}" class="action-btn">Delete</a></li>
+    <li><a href="#add_comment" class="action-btn">Add tracker for project</a></li>
 {% endblock %}
 
 {% block content %}
-    <h1>{{ article.title }}</h1>
-    <p>{{ project.description }}
-
-{#    <div class="pre">{{ article.text }}</div>#}
+    <h1>{{ project.title }}</h1>
+    <h4>{{ project.description }}</h4>
     <hr/>
-    <h3>Comments:</h3>
-    {% if is_paginated %}
-        {% include 'partial/pagination.html' %}
-    {% endif %}
-    <div class="comment-list">
-        {% for comment_det in tracker %}
-            <div class="com">
-                <p>{{ comment_det.author }}</p>
-                <div class="pre">{{ comment_det.deskription }}</div>
+    <h3>Trackers</h3>
+        {% if is_paginated %}
+            {% include 'partial/pagination.html' %}
+        {% endif %}
+        {% for tracker in project.tracker.all %}
+
+            <div class="tracker_for_project">
+                <h4>{{ tracker.summary }}</h4>
+                <div class="pre">{{ tracker.deskription }}</div>
                 <p class="comment-links">
-                    <a href="{% url 'comment_update' comment_det.pk %}">Edit</a>
-                    <a href="{% url 'comment_delete' comment_det.pk %}">Delete</a>
+                    <a href="{% url 'update_tracker' tracker.pk %}" class="btn btn4">Edit</a>
+                    <a href="{% url 'delete_tracker' tracker.pk %}" class="btn btn1">Delete</a>
                 </p>
             </div>
         {% empty %}
-            <p>No comments yet.</p>
+            <p>No tracker yet.</p>
         {% endfor %}
-    </div>
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-    <form action="{% url 'tracker_add' form. %}" method="POST" id="add_comment">
-        {% include 'partial/tracker_form.html' with button_text='Add' %}
-    </form>
+    <div class="form-project_tracker">
+        <form action="{% url 'create_new_tracker' project.pk %}" method="POST" id="add_comment">
+            {% include 'partial/tracker_form.html' with button_text='Add' %}
+        </form>
+    </div>
 {% endblock %}
