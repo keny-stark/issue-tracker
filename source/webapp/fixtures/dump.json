@@ -1,5 +1,52 @@
 [
 {
+  "model": "webapp.project",
+  "pk": 1,
+  "fields": {
+    "title": "Finish well study",
+    "description": "Never give up, fucking power of science!",
+    "status": 1,
+    "created_at": "2019-10-08T17:15:25.429Z",
+    "updated_at": "2019-10-09T17:07:57.688Z"
+  }
+},
+{
+  "model": "webapp.project",
+  "pk": 2,
+  "fields": {
+    "title": "Don't become a homeless programmer",
+    "description": "If this happens i will become a homeless drunkard",
+    "status": 1,
+    "created_at": "2019-10-08T17:47:05.623Z",
+    "updated_at": "2019-10-10T06:06:34.035Z"
+  }
+},
+{
+  "model": "webapp.project",
+  "pk": 3,
+  "fields": {
+    "title": "\u0421rack the pentagon",
+    "description": "do not tell anybody. strictly classified information",
+    "status": 2,
+    "created_at": "2019-10-09T17:17:09.832Z",
+    "updated_at": "2019-10-09T17:17:09.832Z"
+  }
+},
+{
+  "model": "webapp.projectstatus",
+  "pk": 1,
+  "fields": {
+    "status_project": "active"
+  }
+},
+{
+  "model": "webapp.projectstatus",
+  "pk": 2,
+  "fields": {
+    "status_project": "closed"
+  }
+},
+{
   "model": "webapp.tracker",
   "pk": 1,
   "fields": {
@@ -7,6 +54,7 @@
     "description": "i need to take the rope and soap, then find a chair and find a place where you can hook the rope",
     "status": 1,
     "type": 1,
+    "project_id": 1,
     "created_at": "2019-09-25T13:37:25.682Z"
   }
 },
@@ -18,6 +66,7 @@
     "description": "add view for search",
     "status": 3,
     "type": 1,
+    "project_id": 1,
     "created_at": "2019-09-25T16:28:51.923Z"
   }
 },
@@ -29,6 +78,7 @@
     "description": "make artificial intelligence to take over the world",
     "status": 2,
     "type": 1,
+    "project_id": 1,
     "created_at": "2019-09-25T16:30:12.292Z"
   }
 },
@@ -40,6 +90,7 @@
     "description": "need to get rid of myrky",
     "status": 2,
     "type": 2,
+    "project_id": 1,
     "created_at": "2019-09-25T16:32:45.802Z"
   }
 },
@@ -51,6 +102,7 @@
     "description": "finding a new way to improve the code and replace the old one",
     "status": 2,
     "type": 3,
+    "project_id": 1,
     "created_at": "2019-09-25T16:34:40.181Z"
   }
 },
@@ -62,7 +114,44 @@
     "description": "to drink beer, just relax",
     "status": 1,
     "type": 3,
+    "project_id": 1,
     "created_at": "2019-09-25T16:37:16.632Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 25,
+  "fields": {
+    "summary": "\u0437\u0430\u0435\u0431\u0438\u0441\u044c",
+    "description": "sc",
+    "status": 2,
+    "type": 2,
+    "project_id": 2,
+    "created_at": "2019-10-06T16:55:50.457Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 28,
+  "fields": {
+    "summary": "\u0447\u0442\u043e \u0442\u043e \u0442\u0430\u043c",
+    "description": "\u0438 \u0435\u0449\u0451 \u0447\u0442\u043e \u0442\u043e \u0442\u0430\u043c",
+    "status": 1,
+    "type": 3,
+    "project_id": 2,
+    "created_at": "2019-10-10T05:32:13.218Z"
+  }
+},
+{
+  "model": "webapp.tracker",
+  "pk": 29,
+  "fields": {
+    "summary": "\u0447\u0442\u043e \u0442\u043e \u0442\u0430\u043c",
+    "description": "\u0438\u0435\u0449\u0451",
+    "status": 3,
+    "type": 2,
+    "project_id": 2,
+    "created_at": "2019-10-10T05:32:52.614Z"
   }
 },
 {
@@ -87,6 +176,20 @@
   }
 },
 {
+  "model": "webapp.type",
+  "pk": 7,
+  "fields": {
+    "type": "svdf"
+  }
+},
+{
+  "model": "webapp.type",
+  "pk": 8,
+  "fields": {
+    "type": "sadfs"
+  }
+},
+{
   "model": "webapp.status",
   "pk": 1,
   "fields": {
@@ -108,11 +211,18 @@
   }
 },
 {
+  "model": "webapp.status",
+  "pk": 6,
+  "fields": {
+    "status": "afcsa"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$150000$hQaSLBUFaRCl$JZkb0bepaDmhDuvCE8UAY/JsbqENU2JDrymgsBJeg60=",
-    "last_login": "2019-09-25T12:51:46.259Z",
+    "last_login": "2019-10-08T17:10:16.211Z",
     "is_superuser": true,
     "username": "admin",
     "first_name": "",

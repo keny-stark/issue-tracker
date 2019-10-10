@@ -2,6 +2,7 @@
 {% block title %}List{% endblock %}
 {% block menu %}
     <li><a href="{% url 'update_tracker' pk=tracker.pk %}" class="action-btn">Edit</a></li>
+    <li><a href="{% url 'project_detail' tracker.project_id.pk %}" class="action-btn">Project</a></li>
     <li>
         <main>
             <div class="button js-button-campaign action-btn"><span>Delete</span></div>
