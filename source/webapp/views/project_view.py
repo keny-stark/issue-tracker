@@ -24,13 +24,13 @@ class ProjectDetailView(DetailView):
         self.paginate_comments_to_context(trackers, context)
         return context
 
-    def paginate_comments_to_context(self, tracker, context):
-        paginator = Paginator(tracker, 3, 0)
+    def paginate_comments_to_context(self, trackers, context):
+        paginator = Paginator(trackers, 2)
         page_number = self.request.GET.get('page', 1)
         page = paginator.get_page(page_number)
         context['paginator'] = paginator
         context['page_obj'] = page
-        context['tracker'] = page.object_list
+        context['trackers'] = page.object_list
         context['is_paginated'] = page.has_other_pages()
 
 
