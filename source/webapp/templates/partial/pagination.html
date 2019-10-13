@@ -1,24 +1,31 @@
 <div class="pagination">
-    <span class="step-links">
-        <a href="?page=1">&laquo; to the begin</a>
-
+    <form action="" method="GET">
+        <a href="?{% if query %}{{ query }}&{% endif %}page=1">&laquo; To the begin</a>
         {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">back</a>
+            <a href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.previous_page_number }}">Back</a>
         {% else %}
-            <span class="page-disabled">back</span>
+            <span class="page-disabled">Back</span>
         {% endif %}
 
-        <span class="current">
-            page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        <span>
+            Page <input class="page-input" type="text" name="page" value="{{ page_obj.number }}" maxlength="5"> from {{ paginator.num_pages }}.
         </span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
         {% else %}
-            <span class="page-disabled">next</span>
+            <span class="page-disabled">Next</span>
         {% endif %}
 
-        <a href="?page={{ page_obj.paginator.num_pages }}">back to and &raquo;</a>
-    </span>
+        <a href="?{% if query %}{{ query }}&{% endif %}page={{ paginator.num_pages }}">To the end &raquo;</a>
+    </form>
+    <div>
+        {% for page in paginator.page_range %}
+            {% if page_obj.number == page %}
+                <span class="page-active">{{ page }}</span>
+            {% else %}
+                <a href="?{% if query %}{{ query }}&{% endif %}page={{ page }}">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
 </div>
-

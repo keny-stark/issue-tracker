@@ -1,7 +1,9 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse_lazy
+from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
-from webapp.forms import TrackerForm, TrackerProjectForm
+from webapp.forms import TrackerForm, TrackerProjectForm, SimpleSearchForm
 from webapp.models import Tracker, Project
 
 
@@ -11,6 +13,16 @@ class IndexView(ListView):
     template_name = 'tracker/index.html'
     paginate_by = 3
     paginate_orphans = 1
+
+
+
+    def get_search_form(self):
+        return SimpleSearchForm(self.request.GET)
+
+    def get_search_value(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search']
+        return None
 
 
 class TrackerView(DetailView):

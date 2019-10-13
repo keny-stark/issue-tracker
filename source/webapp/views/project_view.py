@@ -28,7 +28,7 @@ class ProjectView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.search_value:
-            query = Q(title__icontains=self.search_value) | Q(author__icontains=self.search_value)
+            query = Q(title__icontains=self.search_value)
             queryset = queryset.filter(query)
         return queryset
 
@@ -54,7 +54,7 @@ class ProjectDetailView(DetailView):
         return context
 
     def paginate_comments_to_context(self, trackers, context):
-        paginator = Paginator(trackers, 2)
+        paginator = Paginator(trackers, 8)
         page_number = self.request.GET.get('page', 1)
         page = paginator.get_page(page_number)
         context['paginator'] = paginator
