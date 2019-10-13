@@ -272,3 +272,8 @@ body {
     max-width: 40%;
     margin-top: 100px;
 }
+.page-input {
+    overflow: visible;
+    width: 60px;
+    text-align: center;
+}
