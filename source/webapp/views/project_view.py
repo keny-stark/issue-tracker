@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
@@ -63,21 +64,21 @@ class ProjectDetailView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'project/project_create.html'
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('projects')
 
 
-class ProjectUpdate(UpdateView):
+class ProjectUpdate(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = 'project/project_update.html'
     success_url = reverse_lazy('projects')
 
 
-class ProjectDelete(DeleteView):
+class ProjectDelete(LoginRequiredMixin, DeleteView):
     template_name = 'project/project_delete.html'
     model = Project
     context_object_name = 'project'

@@ -1,6 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse_lazy, reverse
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from webapp.forms import TrackerForm, TrackerProjectForm, SimpleSearchForm
@@ -47,14 +48,14 @@ class TrackerView(DetailView):
     template_name = 'tracker/tracker.html'
 
 
-class TrackerCreateView(CreateView):
+class TrackerCreateView(LoginRequiredMixin, CreateView):
     template_name = 'tracker/add_tracker.html'
     model = Tracker
     form_class = TrackerForm
     redirect_url = 'tracker'
 
 
-class TrackerForProjectCreateView(CreateView):
+class TrackerForProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'tracker/edit.html'
     form_class = TrackerProjectForm
 
@@ -65,16 +66,17 @@ class TrackerForProjectCreateView(CreateView):
         return redirect('project_detail', pk=project_pk)
 
 
-class TrackerUpdate(UpdateView):
+class TrackerUpdate(LoginRequiredMixin, UpdateView):
     model = Tracker
     form_class = TrackerForm
     template_name = 'tracker/edit.html'
-    redirect_url = 'tracker'
-    success_url = reverse_lazy('index')
+
+    def get_success_url(self):
+        return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
 
 
-class DeleteTracker(DeleteView):
+class DeleteTracker(LoginRequiredMixin, DeleteView):
     template_name = 'tracker/delete_tracker.html'
     model = Tracker
     context_object_name = 'tracker'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('webapp:index')

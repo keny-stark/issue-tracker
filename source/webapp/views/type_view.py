@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls.base import reverse, reverse_lazy
 from django.db.models.deletion import ProtectedError
@@ -13,7 +14,7 @@ class TypeView(ListView):
     template_name = 'type/type.html'
 
 
-class TypeAddView(CreateView):
+class TypeAddView(LoginRequiredMixin, CreateView):
     form_class = TypeForm
     template_name = 'type/add_type.html'
     model = Type
@@ -22,14 +23,14 @@ class TypeAddView(CreateView):
         return reverse('type_views')
 
 
-class UpdateTypeView(UpdateView):
+class UpdateTypeView(LoginRequiredMixin, UpdateView):
     model = Type
     form_class = TypeForm
     template_name = 'type/edit _type.html'
     redirect_url = 'type_views'
 
 
-class DeleteType(DeleteView):
+class DeleteType(LoginRequiredMixin, DeleteView):
     template_name = 'type/type_delete.html'
     model = Type
     context_object_name = 'type'

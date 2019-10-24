@@ -22,3 +22,5 @@ urlpatterns = [
     path('project/<int:pk>/delete/', ProjectDelete.as_view(), name='delete_project'),
     path('article/<int:pk>/add-comment/', TrackerForProjectCreateView.as_view(), name='create_new_tracker')
 ]
+
+app_name = 'webapp'

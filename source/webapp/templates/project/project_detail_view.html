@@ -3,9 +3,9 @@
 {% block title %}{{ project.title }}{% endblock %}
 
 {% block menu %}
-    <li><a href="{% url "projects" %}" class="action-btn">Projects</a></li>
-    <li><a href="{% url "project_update" project.pk %}" class="action-btn">Edit</a></li>
-    <li><a href="{% url "delete_project" project.pk %}" class="action-btn">Delete</a></li>
+    <li><a href="{% url "webapp:projects" %}" class="action-btn">Projects</a></li>
+    <li><a href="{% url "webapp:project_update" project.pk %}" class="action-btn">Edit</a></li>
+    <li><a href="{% url "webapp:delete_project" project.pk %}" class="action-btn">Delete</a></li>
     <li><a href="#add_comment" class="action-btn">Add tracker for project</a></li>
 {% endblock %}
 
@@ -25,9 +25,9 @@
                 <p>{{ tracker.description }}</p>
                 <p>type: {{ tracker.type }}, status: {{ tracker.status }}</p>
                 <p class="comment-links">
-                    <a href="{% url 'tracker' tracker.pk %}" class="btn btn2">more >></a>
-                    <a href="{% url 'update_tracker' tracker.pk %}" class="btn btn4">Edit</a>
-                    <a href="{% url 'delete_tracker' tracker.pk %}" class="btn btn1">Delete</a>
+                    <a href="{% url 'webapp:tracker' tracker.pk %}" class="btn btn2">more >></a>
+                    <a href="{% url 'webapp:update_tracker' tracker.pk %}" class="btn btn4">Edit</a>
+                    <a href="{% url 'webapp:delete_tracker' tracker.pk %}" class="btn btn1">Delete</a>
                 </p>
             </div>
         {% empty %}
@@ -37,7 +37,7 @@
         {% include 'partial/pagination.html' %}
     {% endif %}
     <div class="form-project_tracker">
-        <form action="{% url 'create_new_tracker' project.pk %}" method="POST" id="add_comment">
+        <form action="{% url 'webapp:create_new_tracker' project.pk %}" method="POST" id="add_comment">
             {% include 'partial/tracker_form.html' with button_text='Add' %}
         </form>
     </div>

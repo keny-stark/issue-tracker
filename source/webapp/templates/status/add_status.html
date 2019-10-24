@@ -2,7 +2,7 @@
 {% block title %}Add new status{% endblock %}
 {% block content %}
     <h1>Create new status</h1>
-    <form method="POST" action="{% url "add_status" %}" class="for_form">
+    <form method="POST" action="{% url "webapp:add_status" %}" class="for_form">
         {% include 'partial/tracker_form.html' with button_text='Create' %}
     </form>
 {% endblock %}

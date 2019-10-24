@@ -2,7 +2,7 @@
 {% block title %}Add new Project{% endblock %}
 {% block content %}
     <h1>Create new Project</h1>
-    <form method="POST" action="{% url "project_create" %}" class="for_form">
+    <form method="POST" action="{% url "webapp:project_create" %}" class="for_form">
         {% include 'partial/tracker_form.html' with button_text='Create' %}
     </form>
 {% endblock %}

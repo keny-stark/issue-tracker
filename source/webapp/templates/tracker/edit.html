@@ -2,11 +2,11 @@
 
 {% block title %}Update tracker{% endblock %}
 {% block menu %}
-    <li><a href="{% url 'tracker' object.pk %}" class="action-btn">View</a></li>
+    <li><a href="{% url 'webapp:tracker' object.pk %}" class="action-btn">View</a></li>
 {% endblock %}
 {% block content %}
     <h1>Update tracker</h1>
-    <form method="POST" action="{% url "update_tracker" object.pk %}" class="for_form">
+    <form method="POST" action="{% url "webapp:update_tracker" object.pk %}" class="for_form">
         {% include 'partial/tracker_form.html' with button_text="edit" %}
     </form>
 {% endblock %}

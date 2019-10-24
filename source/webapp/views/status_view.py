@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import ProtectedError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls.base import reverse, reverse_lazy
@@ -12,7 +13,7 @@ class StatusView(ListView):
     template_name = 'status/status.html'
 
 
-class StatusAddView(CreateView):
+class StatusAddView(LoginRequiredMixin, CreateView):
     form_class = StatusForm
     template_name = 'status/add_status.html'
     model = Status
@@ -21,14 +22,14 @@ class StatusAddView(CreateView):
         return reverse('status_views')
 
 
-class DeleteStatus(DeleteView):
+class DeleteStatus(LoginRequiredMixin, DeleteView):
     template_name = 'status/status_delete.html'
     model = Status
     context_object_name = 'status'
     success_url = reverse_lazy('status_views')
 
 
-class UpdateStatusView(UpdateView):
+class UpdateStatusView(LoginRequiredMixin, UpdateView):
     model = Status
     form_class = StatusForm
     template_name = 'status/edit_status.html'
