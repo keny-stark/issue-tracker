@@ -20,7 +20,6 @@ class ProjectStatus(models.Model):
         return self.status_project
 
 
-
 class Tracker(models.Model):
     summary = models.TextField(max_length=100, null=False, blank=False, verbose_name='Summary')
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name='Description')
