@@ -17,9 +17,10 @@
        <ul class="menu">
            {% if request.user.is_authenticated %}
                 <li><a href="{% url 'accounts:logout'  %}" class="action-btn">Log Out</a></li>
-            {% else %}
-                <li><a href="{% url 'accounts:login'  %}" class="action-btn">Log In</a></li>
-            {% endif %}
+                {% else %}
+                    <li><a href="{% url 'accounts:login'  %}" class="action-btn">Log In</a></li>
+                    <li><a href="{% url 'accounts:register' %}">Sign Up</a></li>
+                {% endif %}
            <li><a href="{% url 'webapp:index' %}" class="action-btn">Home</a></li>
            {% block menu %}{% endblock %}
        </ul>
