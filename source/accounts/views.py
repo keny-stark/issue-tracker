@@ -2,9 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from main.settings import HOST_NAME
-from accounts.models import Token
 from accounts.forms import UserCreationForm
 from django.contrib.auth.models import User
+from accounts.models import Token
 
 
 def login_view(request):
@@ -39,16 +39,13 @@ def register_view(request):
             user = User(
                 username=form.cleaned_data['username'],
                 email=form.cleaned_data['email'],
-                is_active=False  # user не активный до подтверждения email
+                is_active=False
             )
             user.set_password(form.cleaned_data['password'])
             user.save()
-
-            # токен для активации, его сложнее угадать, чем pk user-а.
             token = Token.objects.create(user=user)
-            activation_url = HOST_NAME + reverse('accounts:user_activate') + '?token={}'.format(token)
-
-            # отправка письма на email пользователя
+            activation_url = HOST_NAME + reverse('accounts:user_activate') + \
+                             '?token={}'.format(token)
             user.email_user('Регистрация на сайте localhost',
                             'Для активации перейдите по ссылке: {}'.format(activation_url))
 
@@ -60,22 +57,12 @@ def register_view(request):
 def user_activate(request):
     token_value = request.GET.get('token')
     try:
-        # найти токен
         token = Token.objects.get(token=token_value)
-
-        # активировать пользователя
         user = token.user
         user.is_active = True
         user.save()
-
-        # удалить токен, он больше не нужен
         token.delete()
-
-        # войти
         login(request, user)
-
-        # редирект на главную
         return redirect('webapp:index')
     except Token.DoesNotExist:
-        # если токена нет - сразу редирект
         return redirect('webapp:index')

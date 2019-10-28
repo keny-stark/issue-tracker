@@ -123,11 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'accounts:login'
-
-# Для тестирования с mailtrap впишите сюда свои настройки с mailtrap.
 EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = ''  # ваш user
-EMAIL_HOST_PASSWORD = ''  # ваш пароль
+EMAIL_HOST_USER = 'df2041b7d9b95c'
+EMAIL_HOST_PASSWORD = 'ccfa05b653091d'
 EMAIL_PORT = '2525'
 
 HOST_NAME = 'localhost:8000'
