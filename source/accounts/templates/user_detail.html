@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Пользователь{% endblock %}
 {% block menu %}
-    <li><a href="{% url "accounts:update" user_obj.pk %}" class="action-btn">Редактировать</a></li>
-    <li><a href="#" class="action-btn">Смена пароля</a></li>
+    {% if user.pk == user_obj.pk %}
+        <li><a href="{% url "accounts:update" user_obj.pk %}" class="action-btn">Редактировать</a></li>
+        <li><a href="{% url "accounts:password_change" user_obj.pk %}" class="action-btn">Смена пароля</a></li>
+    {% endif %}
 {% endblock %}
 {% block content %}
     <h1>Личный кабинет</h1>

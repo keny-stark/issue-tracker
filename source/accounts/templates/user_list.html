@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+        <div class="home_div">
+            {% for user in users %}
+                <div class="boss_div">
+                    <h4>{{ user.email }}</h4>
+                    <h4>{{ user.first_name }}</h4>
+                    <div class="for_button">
+                        <a href="{% url 'accounts:detail' user.pk %}" class="btn btn1">More >>></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{% endblock %}

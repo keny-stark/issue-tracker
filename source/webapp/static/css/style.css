@@ -283,3 +283,8 @@ body {
     max-width: 300px;
     text-align: center;
 }
+.action-user{
+    text-decoration: none;
+    outline: none;
+    color: white;
+}

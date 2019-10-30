@@ -16,12 +16,13 @@
    <div class="container">
        <ul class="menu">
            {% if request.user.is_authenticated %}
-               <li class="menu-right">Hi, <a href="{% url 'accounts:detail' user.pk %}">{{ user.username }}</a>!</li>
+               <li class="menu-right">Hi, <a href="{% url 'accounts:detail' user.pk %}" class="action-user">{{ user.username }}</a>!</li>
                 <li><a href="{% url 'accounts:logout'  %}" class="action-btn">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'accounts:login'  %}" class="action-btn">Log In</a></li>
                     <li><a href="{% url 'accounts:register' %}" class="action-btn">Sign Up</a></li>
                 {% endif %}
+           <li><a href="{% url 'accounts:all_users_view' %}" class="action-btn">Users</a></li>
            <li><a href="{% url 'webapp:index' %}" class="action-btn">Home</a></li>
            {% block menu %}{% endblock %}
        </ul>

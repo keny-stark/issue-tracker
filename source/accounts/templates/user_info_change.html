@@ -2,7 +2,7 @@
 {% block title %}Личный кабинет{% endblock %}
 {% block menu %}
     <li><a href="{% url "accounts:detail" user_obj.pk %}" class="action-btn">Назад</a></li>
-    <li><a href="#" class="action-btn">Смена пароля</a></li>
+    <li><a href="{% url "accounts:password_change" user_obj.pk %}" class="action-btn">Смена пароля</a></li>
 {% endblock %}
 {% block content %}
     <h1>Личный кабинет</h1>
