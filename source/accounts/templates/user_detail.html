@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Пользователь{% endblock %}
+{% block menu_links %}
+    <li><a href="#">Редактировать</a></li>
+    <li><a href="#">Смена пароля</a></li>
+{% endblock %}
+{% block content %}
+    <h1>Личный кабинет</h1>
+    <p>Имя пользователя: {{ user_obj.username }}</p>
+    <p>Имя: {{ user_obj.first_name }}</p>
+    <p>Фамилия: {{ user_obj.last_name }}</p>
+    <p>Почта: {{ user_obj.email }}</p>
+{% endblock %}

@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 
 from main.settings import HOST_NAME
-from accounts.forms import UserCreationForm
+from accounts.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from accounts.models import Token
 
@@ -46,8 +46,7 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             token = Token.objects.create(user=user)
-            activation_url = HOST_NAME + reverse('accounts:user_activate') + \
-                             '?token={}'.format(token)
+            activation_url = HOST_NAME + reverse('accounts:user_activate') + '?token={}'.format(token)
             user.email_user('Регистрация на сайте localhost',
                             'Для активации перейдите по ссылке: {}'.format(activation_url))
 
@@ -74,3 +73,13 @@ class UserDetailView(DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
+
+
+class UserPersonalInfoChangeView(UpdateView):
+    model = User
+    template_name = 'user_info_change.html'
+    form_class = UserChangeForm
+    context_object_name = 'user_obj'
+
+    def get_success_url(self):
+        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
