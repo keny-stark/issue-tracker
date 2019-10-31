@@ -43,25 +43,25 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
-        labels = {'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email'}
+        labels = {'first_name': 'Name', 'last_name': 'Last name', 'email': 'Email'}
 
 
 class PasswordChangeForm(forms.ModelForm):
-    password = forms.CharField(label="Новый пароль", strip=False, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput, strip=False)
-    old_password = forms.CharField(label="Старый пароль", strip=False, widget=forms.PasswordInput)
+    password = forms.CharField(label="New Password", strip=False, widget=forms.PasswordInput)
+    password_confirm = forms.CharField(label="Confirm the password", widget=forms.PasswordInput, strip=False)
+    old_password = forms.CharField(label="old password", strip=False, widget=forms.PasswordInput)
 
     def clean_password_confirm(self):
         password = self.cleaned_data.get("password")
         password_confirm = self.cleaned_data.get("password_confirm")
         if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError('Пароли не совпадают!')
+            raise forms.ValidationError('Passwords do not match!')
         return password_confirm
 
     def clean_old_password(self):
         old_password = self.cleaned_data.get('old_password')
         if not self.instance.check_password(old_password):
-            raise forms.ValidationError('Старый пароль неправильный!')
+            raise forms.ValidationError('Old password is incorrect!')
         return old_password
 
     def save(self, commit=True):

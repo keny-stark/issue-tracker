@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Пользователь{% endblock %}
+{% block title %}User{% endblock %}
 {% block menu %}
     {% if user.pk == user_obj.pk %}
-        <li><a href="{% url "accounts:update" user_obj.pk %}" class="action-btn">Редактировать</a></li>
-        <li><a href="{% url "accounts:password_change" user_obj.pk %}" class="action-btn">Смена пароля</a></li>
+        <li><a href="{% url "accounts:update" user_obj.pk %}" class="action-btn">Edit</a></li>
+        <li><a href="{% url "accounts:password_change" user_obj.pk %}" class="action-btn">Change Password</a></li>
     {% endif %}
 {% endblock %}
 {% block content %}
-    <h1>Личный кабинет</h1>
-    <p>Имя пользователя: {{ user_obj.username }}</p>
-    <p>Имя: {{ user_obj.first_name }}</p>
-    <p>Фамилия: {{ user_obj.last_name }}</p>
-    <p>Почта: {{ user_obj.email }}</p>
+    <h1>Personal Area</h1>
+    <p>Username: {{ user_obj.username }}</p>
+    <p>Name: {{ user_obj.first_name }}</p>
+    <p>Last name: {{ user_obj.last_name }}</p>
+    <p>email: {{ user_obj.email }}</p>
 {% endblock %}

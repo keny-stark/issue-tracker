@@ -54,8 +54,8 @@ def register_view(request):
             user.save()
             token = Token.objects.create(user=user)
             activation_url = HOST_NAME + reverse('accounts:user_activate') + '?token={}'.format(token)
-            user.email_user('Регистрация на сайте localhost',
-                            'Для активации перейдите по ссылке: {}'.format(activation_url))
+            user.email_user('Register on localhost',
+                            'To activate, follow the link: {}'.format(activation_url))
 
             return redirect("webapp:index")
         else:
