@@ -121,7 +121,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_UR_ = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/uploads/'
 
 LOGIN_URL = 'accounts:login'
 EMAIL_HOST = 'smtp.mailtrap.io'
