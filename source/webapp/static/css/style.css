@@ -56,12 +56,14 @@ body {
     font-weight: bold;
 }
 .boss_div {
-    width: 280px;
+    width: 290px;
     height: auto;
     margin: 40px 0 40px 0;
     justify-content: space-between;
     border: solid 20px #00ff5a52;
     border-radius: 3px;
+    display: flex;
+    flex-direction: column;
 }
 .home_div{
     display: flex;
@@ -75,7 +77,7 @@ body {
 .container {
     margin: 0 auto;
     width: 100%;
-    max-width: 900px;
+    max-width: 1030px;
     text-align: center;
 }
 .btn-primary {
@@ -261,7 +263,7 @@ body {
    color: #dddddd
 }
 .for_button{
-    margin-top: inherit;
+    margin-bottom: 10px;
 }
 .tracker_for_project{
     margin-bottom: 20px;
@@ -287,4 +289,25 @@ body {
     text-decoration: none;
     outline: none;
     color: white;
+}
+
+.row {
+    text-align: left;
+    max-width: 45%;
+    height: auto;
+    margin: 2px;
+    padding: 2px;
+    float: right;
+    display: table-column-group;
+}
+.image {
+    max-width: 45%;
+    height: auto;
+    margin: 2px;
+    padding: 2px;
+    float: left;
+}
+.row_image{
+    max-width: 540px;
+    margin: auto;
 }

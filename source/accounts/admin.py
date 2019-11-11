@@ -1,4 +1,18 @@
 from django.contrib import admin
-from accounts.models import Token
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 
-admin.site.register(Token)
+from .models import Profile
+
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    fields = ['birth_date', 'avatar']
+
+
+class UserProfileAdmin(UserAdmin):
+    inlines = [ProfileInline]
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserProfileAdmin)

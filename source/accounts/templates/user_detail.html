@@ -8,8 +8,20 @@
 {% endblock %}
 {% block content %}
     <h1>Personal Area</h1>
-    <p>Username: {{ user_obj.username }}</p>
-    <p>Name: {{ user_obj.first_name }}</p>
-    <p>Last name: {{ user_obj.last_name }}</p>
-    <p>email: {{ user_obj.email }}</p>
+    <div class="row_image">
+        <div class="image">
+            {% if user_obj.profile.avatar %}
+                <img class="avatar" src="{{ user_obj.profile.avatar.url }}" width="250" height="250" alt="user picture">
+                {% else %}
+                <img class="avatar" src="../../uploads/admin.png" alt="user picture">
+            {% endif %}
+        </div>
+        <div class="row">
+            <p>Username: {{ user_obj.username }}</p>
+            <p>Name: {{ user_obj.first_name }}</p>
+            <p>Last name: {{ user_obj.last_name }}</p>
+            <p>Date of Birth: {{ user_obj.profile.birth_date|date:'d.m.Y' }}</p>
+            <p>email: {{ user_obj.email }}</p>
+        </div>
+    </div>
 {% endblock %}

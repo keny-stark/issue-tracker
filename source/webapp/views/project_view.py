@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from abc import ABC
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
@@ -6,6 +7,8 @@ from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from webapp.forms import ProjectForm, TrackerForm, SimpleSearchForm
 from webapp.models import Project
+from django.urls import reverse
+from django.core.exceptions import PermissionDenied
 
 
 class ProjectView(ListView):
@@ -64,14 +67,21 @@ class ProjectDetailView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(UserPassesTestMixin, CreateView):
     template_name = 'project/project_create.html'
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('projects')
+    raise_exception = PermissionDenied
+
+    def test_func(self):
+        return self.request.user.pk == self.kwargs['pk']
+
+    def get_success_url(self):
+        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
 
-class ProjectUpdate(LoginRequiredMixin, UpdateView):
+class ProjectUpdate(UserPassesTestMixin, LoginRequiredMixin, UpdateView, ABC):
     model = Project
     form_class = ProjectForm
     template_name = 'project/project_update.html'

@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    'webapp',
     'accounts',
+    'webapp'
+
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,4 @@ EMAIL_HOST_PASSWORD = 'ccfa05b653091d'
 EMAIL_PORT = '2525'
 
 HOST_NAME = 'localhost:8000'
+

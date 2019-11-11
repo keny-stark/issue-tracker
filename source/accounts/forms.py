@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from accounts.models import Profile
 
 
 class UserCreationForm(forms.Form):
@@ -40,10 +41,34 @@ class UserCreationForm(forms.Form):
 
 
 class UserChangeForm(forms.ModelForm):
+    avatar = forms.ImageField(label='Аватар', required=False)
+    birth_date = forms.DateField(label='День рождения', input_formats=['%Y-%m-%d', '%d.%m.%Y'], required=False)
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name in self.Meta.profile_fields:
+            return getattr(self.instance.profile, field_name)
+        return super().get_initial_for_field(field, field_name)
+
+    def save(self, commit=True):
+        user = super().save(commit=commit)
+        user.profile = self.save_profile(commit)
+        return user
+
+    def save_profile(self, commit=True):
+        profile, _ = Profile.objects.get_or_create(user=self.instance)
+        for field in self.Meta.profile_fields:
+            setattr(profile, field, self.cleaned_data.get(field))
+        if not profile.avatar:
+            profile.avatar = None
+        if commit:
+            profile.save()
+        return profile
+
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
-        labels = {'first_name': 'Name', 'last_name': 'Last name', 'email': 'Email'}
+        fields = ['first_name', 'last_name', 'email', 'avatar', 'birth_date']
+        profile_fields = ['avatar', 'birth_date']
+        labels = {'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email'}
 
 
 class PasswordChangeForm(forms.ModelForm):
@@ -74,3 +99,18 @@ class PasswordChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['password', 'password_confirm', 'old_password']
+
+
+# class SignUpForm(UserCreationForm):
+#     email = forms.EmailField(required=True, label='Email')
+#
+#     class Meta(UserCreationForm.Meta):
+#         fields = ('username', 'email')
+#
+#     def clean_email(self):
+#         email = self.cleaned_data.get('email')
+#         try:
+#             User.objects.get(email=email)
+#             raise ValidationError('Email already registered.', code='email_registered')
+#         except User.DoesNotExist:
+#             return email
