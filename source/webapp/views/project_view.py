@@ -5,7 +5,7 @@ from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
-from webapp.forms import ProjectForm, TrackerForm, SimpleSearchForm
+from webapp.forms import ProjectForm, TrackerForm, SimpleSearchForm, TrackerProjectForm
 from webapp.models import Project
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
@@ -52,7 +52,7 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = TrackerForm()
+        context['form'] = TrackerProjectForm()
         trackers = context['project'].tracker.order_by('-created_at')
         self.paginate_comments_to_context(trackers, context)
         return context
@@ -87,9 +87,21 @@ class ProjectUpdate(UserPassesTestMixin, LoginRequiredMixin, UpdateView, ABC):
     template_name = 'project/project_update.html'
     success_url = reverse_lazy('projects')
 
+    def test_func(self):
+        users = self.get_object().users.all()
+        if self.request.user in users:
+            return True
+        return False
 
-class ProjectDelete(LoginRequiredMixin, DeleteView):
+
+class ProjectDelete(UserPassesTestMixin, DeleteView):
     template_name = 'project/project_delete.html'
     model = Project
     context_object_name = 'project'
     success_url = reverse_lazy('projects')
+
+    def test_func(self):
+        users = self.get_object().users.all()
+        if self.request.user in users:
+            return True
+        return False

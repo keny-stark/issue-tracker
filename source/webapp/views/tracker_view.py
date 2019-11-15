@@ -1,5 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse_lazy, reverse
 from django.utils.http import urlencode
@@ -48,28 +50,63 @@ class TrackerView(DetailView):
     template_name = 'tracker/tracker.html'
 
 
-class TrackerCreateView(LoginRequiredMixin, CreateView):
+class TrackerCreateView(UserPassesTestMixin, CreateView):
     template_name = 'tracker/add_tracker.html'
     model = Tracker
     form_class = TrackerForm
-    redirect_url = 'tracker'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields['project_id'].queryset = Project.objects.filter()
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.created_by = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        if self.request.user.is_authenticated:
+            return True
+        return False
 
 
-class TrackerForProjectCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'tracker/edit.html'
+class TrackerForProjectCreateView(UserPassesTestMixin, CreateView):
     form_class = TrackerProjectForm
 
     def form_valid(self, form):
-        project_pk = self.kwargs.get('pk')
-        project = get_object_or_404(Project, pk=project_pk)
-        project.tracker.create(**form.cleaned_data)
-        return redirect('project_detail', pk=project_pk)
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        self.object = form.save(commit=False)
+        self.object.created_by = self.request.user
+        self.object.project_id = project
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def test_func(self):
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        users = project.users.all()
+        if self.request.user in users:
+            return True
+        return False
+
+    def get_success_url(self):
+        return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
 
 
-class TrackerUpdate(LoginRequiredMixin, UpdateView):
+class TrackerUpdate(UserPassesTestMixin, UpdateView):
     model = Tracker
     form_class = TrackerForm
     template_name = 'tracker/edit.html'
+
+    def test_func(self):
+        project = self.get_object().project_id
+        users = project.users.all()
+        if self.request.user in users:
+            return True
+        return False
 
     def get_success_url(self):
         return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
@@ -80,3 +117,10 @@ class DeleteTracker(LoginRequiredMixin, DeleteView):
     model = Tracker
     context_object_name = 'tracker'
     success_url = reverse_lazy('webapp:index')
+
+    def test_func(self):
+        project = self.get_object().project_id
+        users = project.users.all()
+        if self.request.user in users:
+            return True
+        return False
