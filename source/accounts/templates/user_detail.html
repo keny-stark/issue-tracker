@@ -22,6 +22,8 @@
             <p>Last name: {{ user_obj.last_name }}</p>
             <p>Date of Birth: {{ user_obj.profile.birth_date|date:'d.m.Y' }}</p>
             <p>email: {{ user_obj.email }}</p>
+            <p>git: {{ user_obj.profile.site }}</p>
+            <p>about: {{ user_obj.profile.text }}</p>
         </div>
     </div>
 {% endblock %}
