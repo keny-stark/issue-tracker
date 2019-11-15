@@ -6,8 +6,10 @@ from webapp.models import Project
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, verbose_name='Пользователь')
-    birth_date = models.DateField(null=True, blank=True, verbose_name='Дата рождения')
+    birth_date = models.DateField(null=True, blank=True, verbose_name='birth date')
+    text = models.TextField(null=True, blank=True, verbose_name='about', max_length=2000)
     avatar = models.ImageField(null=True, blank=True, upload_to='user_pics', verbose_name='Аватар')
+    site = models.URLField(max_length=255, null=True, blank=True, verbose_name='site')
 
     def __str__(self):
         return self.user.get_full_name() + "'s Profile"

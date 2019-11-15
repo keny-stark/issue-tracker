@@ -7,7 +7,7 @@ from .models import Profile
 
 class ProfileInline(admin.StackedInline):
     model = Profile
-    fields = ['birth_date', 'avatar']
+    fields = ['birth_date', 'avatar', 'site', 'text']
 
 
 class UserProfileAdmin(UserAdmin):

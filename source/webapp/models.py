@@ -33,7 +33,7 @@ class Tracker(models.Model):
     status = models.ForeignKey('webapp.Status', related_name='tracker', on_delete=models.PROTECT, verbose_name='Status')
     type = models.ForeignKey('webapp.Type', related_name='tracker', on_delete=models.PROTECT, verbose_name='Type')
     project_id = models.ForeignKey('webapp.Project', related_name='tracker',
-                                   on_delete=models.PROTECT, verbose_name='Project', blank=False, null=True)
+                                   on_delete=models.SET_NULL, verbose_name='Project', blank=False, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Time of add')
 
     def __str__(self):
@@ -54,20 +54,12 @@ class Status(models.Model):
         return self.status
 
 
-TEAM_ROLE_CHOICES = (
-    ('creator', 'Creator'),
-    ('admin', 'Admin'),
-    ('author', 'Author')
-)
-
-
 class Team(models.Model):
     project = models.ForeignKey('webapp.Project', related_name='team_user',
                                 on_delete=models.CASCADE, verbose_name='Project')
     user = models.ForeignKey('auth.User', related_name='user_team', on_delete=models.CASCADE, verbose_name='user')
-    role = models.CharField(max_length=20, choices=TEAM_ROLE_CHOICES, verbose_name='role')
     updated_at = models.DateTimeField(auto_now=False, blank=True, null=True,  verbose_name='Date of completion')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Time of creation')
 
     def __str__(self):
-        return f'{self.project} - {self.user} | {self.role}'
+        return f'{self.project} - {self.user}'
