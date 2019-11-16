@@ -10,6 +10,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Time created')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Time updated')
 
+
     def __str__(self):
         return self.title
 
@@ -26,8 +27,10 @@ def get_admin():
 
 
 class Tracker(models.Model):
-    created_by = models.ForeignKey(User, null=False, blank=False, default=get_admin, verbose_name='author',
-                                   on_delete=models.PROTECT, related_name='articles')
+    created_by = models.ForeignKey(User, null=False, blank=False, default=get_admin, verbose_name='created by',
+                                   on_delete=models.PROTECT, related_name='tracker_by')
+    assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE,
+                                    related_name='tracker_assigned', verbose_name='assigned to')
     summary = models.TextField(max_length=100, null=False, blank=False, verbose_name='Summary')
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name='Description')
     status = models.ForeignKey('webapp.Status', related_name='tracker', on_delete=models.PROTECT, verbose_name='Status')

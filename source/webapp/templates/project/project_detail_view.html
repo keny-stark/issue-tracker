@@ -36,9 +36,13 @@
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-    <div class="form-project_tracker">
-        <form action="{% url 'webapp:create_new_tracker' project.pk %}" method="POST" id="add_comment">
-            {% include 'partial/tracker_form.html' with button_text='Add' %}
-        </form>
-    </div>
+    {% for user_obj in users_in_project %}
+        {% if  user_obj == user %}
+            <div class="form-project_tracker">
+                <form action="{% url 'webapp:create_new_tracker' project.pk %}" method="POST" id="add_comment">
+                    {% include 'partial/tracker_form.html' with button_text='Add' %}
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

@@ -27,4 +27,9 @@
     <p>Task author: {{ tracker.created_by }}</p>
     <p>time of created: {{ tracker.created_at }}</p>
     <p>status: <b>{{ tracker.status }}</b>, type: <b>{{ tracker.type }}</b></p>
+    {% for user in tracker.assigned_to.first_name %}
+        <p>{{ user }}</p>
+
+    {% endfor %}
+
 {% endblock %}

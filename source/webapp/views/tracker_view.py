@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse_lazy, reverse
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
@@ -57,7 +56,9 @@ class TrackerCreateView(UserPassesTestMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=None)
-        form.fields['project_id'].queryset = Project.objects.filter()
+        form.fields['project_id'].queryset = Project.objects.filter(team_user__user=self.request.user,
+                                                                    team_user__updated_at__isnull=True)
+        return form
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -102,25 +103,26 @@ class TrackerUpdate(UserPassesTestMixin, UpdateView):
     template_name = 'tracker/edit.html'
 
     def test_func(self):
-        project = self.get_object().project_id
-        users = project.users.all()
-        if self.request.user in users:
-            return True
-        return False
+        issue = self.get_object()
+        project = issue.project_id
+        users_in_project = User.objects.filter(user_team__project=project, user_team__updated_at__isnull=True)
+        return self.request.user in users_in_project
 
     def get_success_url(self):
+        # if self.request.user in users_in_project:
+        #     return True
+        # return False
         return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
 
 
-class DeleteTracker(LoginRequiredMixin, DeleteView):
+class DeleteTracker(UserPassesTestMixin, DeleteView):
     template_name = 'tracker/delete_tracker.html'
     model = Tracker
     context_object_name = 'tracker'
     success_url = reverse_lazy('webapp:index')
 
     def test_func(self):
-        project = self.get_object().project_id
-        users = project.users.all()
-        if self.request.user in users:
-            return True
-        return False
+        tracker = self.get_object()
+        project = tracker.project_id
+        users_in_project = User.objects.filter(user_team__project=project, user_team__updated_at__isnull=True)
+        return self.request.user in users_in_project

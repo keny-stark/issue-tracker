@@ -1,5 +1,6 @@
 from abc import ABC
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
@@ -53,6 +54,8 @@ class ProjectDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = TrackerProjectForm()
+        context['users_in_project'] = User.objects.filter(user_team__project=context['project'],
+                                                          user_team__updated_at__isnull=True)
         trackers = context['project'].tracker.order_by('-created_at')
         self.paginate_comments_to_context(trackers, context)
         return context
@@ -67,15 +70,12 @@ class ProjectDetailView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(UserPassesTestMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'project/project_create.html'
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('projects')
     raise_exception = PermissionDenied
-
-    def test_func(self):
-        return self.request.user.pk == self.kwargs['pk']
 
     def get_success_url(self):
         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
