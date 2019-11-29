@@ -5,11 +5,12 @@ from django.http import HttpResponseRedirect
 from django.urls.base import reverse_lazy, reverse
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
-from webapp.forms import TrackerForm, TrackerProjectForm, SimpleSearchForm
+from webapp.forms import TrackerProjectForm, SimpleSearchForm
 from webapp.models import Tracker, Project
+from webapp.mixins import StatsMixin
 
 
-class IndexView(ListView):
+class IndexView(StatsMixin, ListView):
     context_object_name = 'tracker'
     model = Tracker
     template_name = 'tracker/index.html'
@@ -44,21 +45,28 @@ class IndexView(ListView):
         return None
 
 
-class TrackerView(DetailView):
+class TrackerView(StatsMixin, DetailView):
     model = Tracker
     template_name = 'tracker/tracker.html'
 
 
-class TrackerCreateView(UserPassesTestMixin, CreateView):
+class TrackerCreateView(UserPassesTestMixin, StatsMixin, CreateView):
     template_name = 'tracker/add_tracker.html'
     model = Tracker
-    form_class = TrackerForm
+    form_class = TrackerProjectForm
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=None)
-        form.fields['project_id'].queryset = Project.objects.filter(team_user__user=self.request.user,
-                                                                    team_user__updated_at__isnull=True)
+        form.fields['project_id'].queryset = Project.objects.filter(project_user_team__user=self.request.user,
+                                                                    project_user_team__updated_at__isnull=True)
         return form
+
+    def get_form_kwargs(self):
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        kwargs = super().get_form_kwargs()
+        user = User.objects.filter(user_team__project=project)
+        kwargs['user'] = user
+        return kwargs
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -75,8 +83,9 @@ class TrackerCreateView(UserPassesTestMixin, CreateView):
         return False
 
 
-class TrackerForProjectCreateView(UserPassesTestMixin, CreateView):
+class TrackerForProjectCreateView(UserPassesTestMixin, StatsMixin, CreateView):
     form_class = TrackerProjectForm
+    template_name = "tracker/add_tracker.html"
 
     def form_valid(self, form):
         project = Project.objects.get(pk=self.kwargs['pk'])
@@ -84,12 +93,20 @@ class TrackerForProjectCreateView(UserPassesTestMixin, CreateView):
         self.object.created_by = self.request.user
         self.object.project_id = project
         self.object.save()
+
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_form_kwargs(self):
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        kwargs = super().get_form_kwargs()
+        user = User.objects.filter(user_team__project=project)
+        kwargs['user'] = user
+        return kwargs
 
     def test_func(self):
         project = Project.objects.get(pk=self.kwargs['pk'])
-        users = project.users.all()
-        if self.request.user in users:
+        team = project.project_user_team.filter(user=self.request.user)
+        if len(team) != 0:
             return True
         return False
 
@@ -97,9 +114,9 @@ class TrackerForProjectCreateView(UserPassesTestMixin, CreateView):
         return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
 
 
-class TrackerUpdate(UserPassesTestMixin, UpdateView):
+class TrackerUpdate(UserPassesTestMixin, StatsMixin, UpdateView):
     model = Tracker
-    form_class = TrackerForm
+    form_class = TrackerProjectForm
     template_name = 'tracker/edit.html'
 
     def test_func(self):
@@ -108,6 +125,13 @@ class TrackerUpdate(UserPassesTestMixin, UpdateView):
         users_in_project = User.objects.filter(user_team__project=project, user_team__updated_at__isnull=True)
         return self.request.user in users_in_project
 
+    def get_form_kwargs(self):
+        project = Project.objects.get(tracker=self.object.pk)
+        kwargs = super().get_form_kwargs()
+        user = User.objects.filter(user_team__project=project)
+        kwargs['user'] = user
+        return kwargs
+
     def get_success_url(self):
         # if self.request.user in users_in_project:
         #     return True
@@ -115,7 +139,7 @@ class TrackerUpdate(UserPassesTestMixin, UpdateView):
         return reverse('webapp:tracker', kwargs={'pk': self.object.pk})
 
 
-class DeleteTracker(UserPassesTestMixin, DeleteView):
+class DeleteTracker(UserPassesTestMixin, StatsMixin, DeleteView):
     template_name = 'tracker/delete_tracker.html'
     model = Tracker
     context_object_name = 'tracker'

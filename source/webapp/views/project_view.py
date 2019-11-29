@@ -2,17 +2,19 @@ from abc import ABC
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
-from webapp.forms import ProjectForm, TrackerForm, SimpleSearchForm, TrackerProjectForm
-from webapp.models import Project
+from webapp.forms import ProjectForm, SimpleSearchForm
+from webapp.models import Project, Team
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
+from webapp.mixins import StatsMixin
 
 
-class ProjectView(ListView):
+class ProjectView(StatsMixin, ListView):
     context_object_name = 'project'
     model = Project
     template_name = 'project/projects_view.html'
@@ -46,14 +48,14 @@ class ProjectView(ListView):
         return None
 
 
-class ProjectDetailView(DetailView):
+class ProjectDetailView(StatsMixin, DetailView):
     model = Project
     template_name = 'project/project_detail_view.html'
     context_object_name = 'project'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = TrackerProjectForm()
+        # context['form'] = TrackerProjectForm()
         context['users_in_project'] = User.objects.filter(user_team__project=context['project'],
                                                           user_team__updated_at__isnull=True)
         trackers = context['project'].tracker.order_by('-created_at')
@@ -70,38 +72,46 @@ class ProjectDetailView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, StatsMixin, CreateView):
     template_name = 'project/project_create.html'
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('projects')
     raise_exception = PermissionDenied
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        users = User.objects.exclude(pk=self.request.user.pk)
+        kwargs['users'] = users
+        return kwargs
+
     def get_success_url(self):
-        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_detail', kwargs={'pk': self.object.pk})
 
 
-class ProjectUpdate(UserPassesTestMixin, LoginRequiredMixin, UpdateView, ABC):
+class ProjectUpdate(UserPassesTestMixin, StatsMixin, LoginRequiredMixin, UpdateView, ABC):
     model = Project
     form_class = ProjectForm
     template_name = 'project/project_update.html'
     success_url = reverse_lazy('projects')
 
     def test_func(self):
-        users = self.get_object().users.all()
-        if self.request.user in users:
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        team = project.project_user_team.filter(user=self.request.user)
+        if len(team) != 0:
             return True
         return False
 
 
-class ProjectDelete(UserPassesTestMixin, DeleteView):
+class ProjectDelete(UserPassesTestMixin, StatsMixin, DeleteView):
     template_name = 'project/project_delete.html'
     model = Project
     context_object_name = 'project'
     success_url = reverse_lazy('projects')
 
     def test_func(self):
-        users = self.get_object().users.all()
-        if self.request.user in users:
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        team = project.project_user_team.filter(user=self.request.user)
+        if len(team) != 0:
             return True
         return False
