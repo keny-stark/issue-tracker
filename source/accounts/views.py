@@ -8,9 +8,10 @@ from main.settings import HOST_NAME
 from accounts.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from accounts.models import Token
+from webapp.mixins import StatsMixin
 
 
-class UsersView(ListView):
+class UsersView(StatsMixin, ListView):
     context_object_name = 'users'
     model = User
     template_name = 'user_list.html'
@@ -76,13 +77,13 @@ def user_activate(request):
         return redirect('webapp:index')
 
 
-class UserDetailView(DetailView):
+class UserDetailView(StatsMixin, DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
 
 
-class UserPersonalInfoChangeView(UserPassesTestMixin, UpdateView):
+class UserPersonalInfoChangeView(UserPassesTestMixin, StatsMixin, UpdateView):
     model = User
     template_name = 'user_info_change.html'
     form_class = UserChangeForm
@@ -95,7 +96,7 @@ class UserPersonalInfoChangeView(UserPassesTestMixin, UpdateView):
         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
 
-class UserPasswordChangeView(UserPassesTestMixin, UpdateView):
+class UserPasswordChangeView(UserPassesTestMixin, StatsMixin, UpdateView):
     model = User
     template_name = 'user_password_change.html'
     form_class = PasswordChangeForm
