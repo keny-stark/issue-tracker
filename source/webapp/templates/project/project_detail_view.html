@@ -6,7 +6,7 @@
     <li><a href="{% url "webapp:projects" %}" class="action-btn">Projects</a></li>
     <li><a href="{% url "webapp:project_update" project.pk %}" class="action-btn">Edit</a></li>
     <li><a href="{% url "webapp:delete_project" project.pk %}" class="action-btn">Delete</a></li>
-    <li><a href="#add_comment" class="action-btn">Add tracker for project</a></li>
+    <li><a href="{% url "webapp:create_new_tracker" project.pk%}" class="action-btn">Add tracker for project</a></li>
 {% endblock %}
 
 {% block content %}
@@ -36,13 +36,5 @@
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-    {% for user_obj in users_in_project %}
-        {% if  user_obj == user %}
-            <div class="form-project_tracker">
-                <form action="{% url 'webapp:create_new_tracker' project.pk %}" method="POST" id="add_comment">
-                    {% include 'partial/tracker_form.html' with button_text='Add' %}
-                </form>
-            </div>
-        {% endif %}
-    {% endfor %}
+
 {% endblock %}

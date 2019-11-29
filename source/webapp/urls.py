@@ -20,7 +20,7 @@ urlpatterns = [
     path('project/add/', ProjectCreateView.as_view(), name='project_create'),
     path('project/<int:pk>/edit/', ProjectUpdate.as_view(), name='project_update'),
     path('project/<int:pk>/delete/', ProjectDelete.as_view(), name='delete_project'),
-    path('article/<int:pk>/add-comment/', TrackerForProjectCreateView.as_view(), name='create_new_tracker')
+    path('project/<int:pk>/add-tracker/', TrackerForProjectCreateView.as_view(), name='create_new_tracker')
 ]
 
 app_name = 'webapp'

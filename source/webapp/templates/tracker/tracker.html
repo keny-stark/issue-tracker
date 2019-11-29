@@ -25,6 +25,7 @@
     <h4>Project: {{ tracker.project_id }}</h4>
     <p class="for_text">Description: {{ tracker.description }}</p>
     <p>Task author: {{ tracker.created_by }}</p>
+    <p>assigned to: {{ tracker.assigned_to }}</p>
     <p>time of created: {{ tracker.created_at }}</p>
     <p>status: <b>{{ tracker.status }}</b>, type: <b>{{ tracker.type }}</b></p>
     {% for user in tracker.assigned_to.first_name %}
