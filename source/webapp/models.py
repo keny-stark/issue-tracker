@@ -58,7 +58,7 @@ class Status(models.Model):
 
 
 class Team(models.Model):
-    project = models.ForeignKey('webapp.Project', related_name='team_user',
+    project = models.ForeignKey('webapp.Project', related_name='project_user_team',
                                 on_delete=models.CASCADE, verbose_name='Project')
     user = models.ForeignKey('auth.User', related_name='user_team', on_delete=models.CASCADE, verbose_name='user')
     updated_at = models.DateTimeField(auto_now=False, blank=True, null=True,  verbose_name='Date of completion')

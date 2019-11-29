@@ -1,8 +1,13 @@
 from django import forms
 from webapp.models import Type, Status, Tracker, Project
+from django.contrib.auth.models import User
 
 
 class TrackerProjectForm(forms.ModelForm):
+    def __init__(self, user=None, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['assigned_to'].queryset = user
+
     class Meta:
         model = Tracker
 
@@ -12,17 +17,11 @@ class TrackerProjectForm(forms.ModelForm):
         exclude = ['created_at', 'created_by', 'project_id']
 
 
-class TrackerForm(forms.ModelForm):
-    class Meta:
-        model = Tracker
-        widgets = {
-            'summary': forms.TextInput,
-        }
-        fields = ['summary', 'description', 'type', 'status', 'project_id']
-        exclude = ['created_at']
-
-
 class ProjectForm(forms.ModelForm):
+    def __init__(self, users=None, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['users'] = forms.ModelMultipleChoiceField(queryset=users)
+
     class Meta:
         model = Project
         fields = ['title', 'description', 'status']
