@@ -1,5 +1,5 @@
 from django import forms
-from webapp.models import Type, Status, Tracker, Project
+from webapp.models import Type, Status, Tracker, Project, Team
 from django.contrib.auth.models import User
 
 
@@ -25,6 +25,12 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['title', 'description', 'status']
+
+
+class TeamForm(forms.ModelForm):
+    def __init__(self, users=None, **kwargs):
+        super().__init__(**kwargs)
+        self.fields['users'] = forms.ModelMultipleChoiceField(queryset=users)
 
 
 class TypeForm(forms.ModelForm):

@@ -3,11 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls.base import reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
-from webapp.forms import ProjectForm, SimpleSearchForm
+from webapp.forms import ProjectForm, SimpleSearchForm, TeamForm
 from webapp.models import Project, Team
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
@@ -79,6 +80,20 @@ class ProjectCreateView(LoginRequiredMixin, StatsMixin, CreateView):
     success_url = reverse_lazy('projects')
     raise_exception = PermissionDenied
 
+    def form_valid(self, form):
+        users = form.cleaned_data.pop('users').values('pk')
+        self.object = form.save()
+        self.create_team(users)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def create_team(self, users):
+        users_team = list(users)
+        users_team.append({'pk': self.request.user.pk})
+        for user_obj in users_team:
+            if user_obj:
+                Team.objects.create(project=self.object, user_id=user_obj.get('pk'))
+
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         users = User.objects.exclude(pk=self.request.user.pk)
@@ -95,10 +110,51 @@ class ProjectUpdate(UserPassesTestMixin, StatsMixin, LoginRequiredMixin, UpdateV
     template_name = 'project/project_update.html'
     success_url = reverse_lazy('projects')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        users = User.objects.exclude(pk=self.request.user.pk)
+        kwargs['users'] = users
+        return kwargs
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        del form.fields['users']
+        return form
+
     def test_func(self):
         project = Project.objects.get(pk=self.kwargs['pk'])
         team = project.project_user_team.filter(user=self.request.user)
         if len(team) != 0:
+            return True
+        return False
+
+# [user1, user2, user3, user4] post data
+# [user1, user2] initial
+# create()
+
+# [user2, user3] post data
+# [user1, user2, user3, user4] initial
+# delete()
+
+
+
+
+class TeamUpdate(UserPassesTestMixin, StatsMixin, LoginRequiredMixin, UpdateView, ABC):
+    model = Team
+    form_class = TeamForm
+    # template_name = 'project/project_update.html'
+    success_url = reverse_lazy('projects')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        users = User.objects.exclude(pk=self.request.user.pk)
+        kwargs['users'] = users
+        return kwargs
+
+    def test_func(self):
+        team = Team.objects.get(pk=self.kwargs['pk'])
+        team_in_team = team.objects.filter(user=self.request.user)
+        if len(team_in_team) != 0:
             return True
         return False
 
