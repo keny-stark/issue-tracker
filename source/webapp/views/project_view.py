@@ -59,7 +59,7 @@ class ProjectDetailView(StatsMixin, DetailView):
         # context['form'] = TrackerProjectForm()
         context['users_in_project'] = User.objects.filter(user_team__project=context['project'],
                                                           user_team__updated_at__isnull=True)
-        trackers = context['project'].tracker.order_by('-created_at')
+        trackers = context['project'].tracker_project.order_by('-created_at')
         self.paginate_comments_to_context(trackers, context)
         return context
 
